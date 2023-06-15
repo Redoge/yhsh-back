@@ -3,6 +3,7 @@ package app.redoge.yhshback.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "activities")
@@ -32,4 +33,10 @@ public class Activity {
     @Column(name = "activity_is_removed")
     private boolean removed = false;
 
+    public void addTraining(Training training) {
+        if (trainings == null) {
+            trainings = new ArrayList<>();
+        }
+        trainings.add(training);
+    }
 }
