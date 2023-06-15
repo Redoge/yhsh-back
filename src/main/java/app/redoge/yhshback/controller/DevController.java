@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static app.redoge.yhshback.utill.paths.Constants.DEV_PATH;
+
 @RestController
-@RequestMapping("/dev")
+@RequestMapping(DEV_PATH)
 public class DevController {
     @GetMapping
     public DevResponse dev() {
