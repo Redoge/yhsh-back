@@ -153,8 +153,6 @@ public class UserService {
     }
 
     public User getUserById(long id) throws UserNotFoundException {
-        var user = userRepository.findById(id);
-        if(user.isPresent()) return user.get();
-        throw new UserNotFoundException(id);
+        return userRepository.findById(id).orElseThrow(()->new UserNotFoundException(id));
     }
 }

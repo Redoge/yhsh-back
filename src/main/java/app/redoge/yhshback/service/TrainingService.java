@@ -2,6 +2,7 @@ package app.redoge.yhshback.service;
 
 import app.redoge.yhshback.entity.Activity;
 import app.redoge.yhshback.entity.Training;
+import app.redoge.yhshback.exception.TrainingNotFoundException;
 import app.redoge.yhshback.repository.TrainingRepository;
 import app.redoge.yhshback.utill.TrainingUtil;
 import app.redoge.yhshback.utill.filter.TrainingFilter;
@@ -108,5 +109,13 @@ public class TrainingService {
     public void saveAndAddToActivity(Training training, Activity activity) {
         activity.addTraining(training);
         save(training);
+    }
+
+    public List<Training> getAllTraining() {
+        return trainingRepository.findAll();
+    }
+
+    public Training getTrainingById(long id) throws TrainingNotFoundException {
+        return trainingRepository.findById(id).orElseThrow(() -> new TrainingNotFoundException(id));
     }
 }
