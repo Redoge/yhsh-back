@@ -1,0 +1,22 @@
+server:
+  port: 8080
+  error:
+    whitelabel:
+      enabled: true
+spring:
+#  security:
+#    user:
+#      password: admin
+#      name: admin
+  datasource:
+    url: jdbc:mysql://localhost:3306/yhshback
+    username: redoge
+    password: redoge1670
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    generate-ddl: false
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: update
