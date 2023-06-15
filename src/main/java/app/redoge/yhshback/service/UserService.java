@@ -3,6 +3,7 @@ package app.redoge.yhshback.service;
 
 import app.redoge.yhshback.entity.User;
 import app.redoge.yhshback.entity.enums.UserRole;
+import app.redoge.yhshback.exception.UserNotFoundException;
 import app.redoge.yhshback.pojo.UserUpdateRequestPojo;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -149,5 +150,11 @@ public class UserService {
         }else{
             LOGGER.error("User enabled not changed");
         }
+    }
+
+    public User getUserById(long id) throws UserNotFoundException {
+        var user = userRepository.findById(id);
+        if(user.isPresent()) return user.get();
+        throw new UserNotFoundException(id);
     }
 }
