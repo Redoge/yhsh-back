@@ -4,6 +4,8 @@ package app.redoge.yhshback.service;
 import app.redoge.yhshback.entity.User;
 import app.redoge.yhshback.entity.enums.UserRole;
 import app.redoge.yhshback.pojo.UserUpdateRequestPojo;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import app.redoge.yhshback.repository.UserRepository;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 @Service
 @Transactional
@@ -29,7 +32,7 @@ public class UserService {
     }
 
     public User findUserByEmail(String email) {
-        if(email != null && email.length() > 0) {
+        if(isNotEmpty(email)) {
             LOGGER.debug("Found user by email " + email);
             return userRepository.findByEmail(email);
         }else{
@@ -39,7 +42,7 @@ public class UserService {
     }
 
     public User findUserByUserName(String userName) {
-        if(userName != null && userName.length() > 0) {
+        if(isNotEmpty(userName)) {
             LOGGER.debug("Found user by username " + userName);
             return userRepository.findByUsername(userName);
         }else{
@@ -49,24 +52,23 @@ public class UserService {
     }
 
     public void saveUser(User user) {
-        if(user!= null) {
-            LOGGER.info("User saved " + user.getUsername());
+        if(isNotEmpty(user)) {
             save(user, UserRole.USER);
+            LOGGER.info("User saved " + user.getUsername());
         }else{
             LOGGER.error("User not saved");
         }
     }
     public void saveAdmin(User user) {
-        if(user!= null) {
-            LOGGER.info("Admin saved " + user.getUsername());
+        if(isNotEmpty(user)) {
             save(user, UserRole.ADMIN);
-
+            LOGGER.info("Admin saved " + user.getUsername());
         }else{
             LOGGER.error("Admin not saved");
         }
     }
     public void save(User user, UserRole userRole) {
-        if(user.getUsername()!=null && user.getEmail()!=null && user.getPassword()!=null &&
+        if(isNotEmpty(user.getUsername()) && isNotEmpty(user.getEmail()) && isNotEmpty(user.getPassword()) &&
                 !userExistsByEmail(user.getEmail()) && !userExistsByUsername(user.getUsername())){
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             user.setUserRole(userRole);
@@ -78,7 +80,7 @@ public class UserService {
     }
 
     public void update(User user){
-        if(user!= null) {
+        if(isNotEmpty(user)) {
             userRepository.save(user);
             LOGGER.info("User updated: " + user.getUsername());
         }else{
@@ -86,10 +88,10 @@ public class UserService {
         }
     }
     public void update(User user, UserUpdateRequestPojo up){
-        if(user!= null) {
+        if(isNotEmpty(user)) {
             if(up.heightSm()>50&&up.heightSm()<300) user.setHeightSm(up.heightSm());
             if(up.weightKg()>10&&up.weightKg()<300) user.setWeightKg(up.weightKg());
-            if(up.sex()!=null&&(up.sex().equals("Male") || up.sex().equals("Female"))) user.setSex(up.sex());
+            if(isNotEmpty(up.sex())&&(up.sex().equals("Male") || up.sex().equals("Female"))) user.setSex(up.sex());
             userRepository.save(user);
             LOGGER.info("User updated: " + user.getUsername());
         }else{
@@ -103,7 +105,7 @@ public class UserService {
     }
 
     public List<User> getAllUsersByUserRole(UserRole userRole){
-        if(userRole!=null){
+        if(isNotEmpty(userRole)){
             LOGGER.debug("Get all users by user role " + userRole);
             return userRepository.findByUserRole(userRole);
         }else{

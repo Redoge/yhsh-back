@@ -6,6 +6,8 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+
 @Entity(name = "activities")
 @Data
 @Builder
@@ -34,7 +36,7 @@ public class Activity {
     private boolean removed = false;
 
     public void addTraining(Training training) {
-        if (trainings == null) {
+        if (isEmpty(trainings)) {
             trainings = new ArrayList<>();
         }
         trainings.add(training);

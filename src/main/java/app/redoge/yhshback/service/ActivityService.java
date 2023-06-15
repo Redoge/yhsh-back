@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
+
 
 @Service
 @Transactional
@@ -29,16 +31,16 @@ public class ActivityService {
     }
     @Transactional
     public void save(Activity activity) {
-        if(activity.getName()!= null && activity.getName().trim().length()!=0){
-            LOGGER.info("Saving activity " + activity.getName());
+        if(isNotEmpty(activity.getName())){
             activityRepository.save(activity);
+            LOGGER.info("Saving activity " + activity.getName());
         }else{
             LOGGER.error("Activity name null or empty");
         }
     }
     @Transactional
     public void saveWithCreator(Activity activity, User user) {
-        if(activity.getName()!= null && activity.getName().trim().length()!=0){
+        if(isNotEmpty(activity.getName())){
             activity.setCreator(user);
             activityRepository.save(activity);
             LOGGER.info("Saving activity " + activity.getName());
@@ -50,7 +52,7 @@ public class ActivityService {
     @Transactional
     public void removeById(long activityId) {
         Activity activity = getActivityById(activityId).orElse(null);
-        if(activity != null) {
+        if(isNotEmpty(activity)) {
             activity.setRemoved(true);
             save(activity);
             LOGGER.info("Remove activity " + activity.getName());

@@ -9,14 +9,14 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class StatsUtil {
+public class PojoUtil {
     private final TrainingFilter trainingFilter;
 
-    public StatsUtil(TrainingFilter trainingFilter) {
+    public PojoUtil(TrainingFilter trainingFilter) {
         this.trainingFilter = trainingFilter;
     }
 
-    public UserActivityStatsPojo buildUserActivityStatsByActivity(Activity activity){
+    public UserActivityStatsPojo buildUserActivityStatsPojoByActivity(Activity activity){
         List<Integer> counts = trainingFilter.filterNotRemovedTraining(activity.getTrainings())
                 .stream()
                 .map(Training::getCount)

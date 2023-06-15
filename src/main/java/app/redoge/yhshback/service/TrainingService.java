@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 @Service
 @Transactional
@@ -34,8 +35,7 @@ public class TrainingService {
 
     public void save(Training training) {
         if (training.getCount() > 0 &&
-
-                training.getActivity() != null && training.getStartTime() != null) {
+                isNotEmpty(training.getActivity()) && isNotEmpty(training.getStartTime())) {
             trainingRepository.save(training);
             LOGGER.info("Saved training: " + training.getActivity().getName());
         } else {
@@ -65,7 +65,7 @@ public class TrainingService {
     public boolean removeById(long trainingId) {
         LOGGER.debug("Removing training by training id " + trainingId);
         Training training = getById(trainingId).orElse(null);
-        if (training != null) {
+        if (isNotEmpty(training)) {
             training.setRemoved(true);
             trainingRepository.save(training);
             return true;
@@ -95,7 +95,7 @@ public class TrainingService {
     public boolean removeByIdAndActivityId(long trainingId, long activityId) {
         LOGGER.debug("Removing training by training id " + trainingId);
         Training training = getById(trainingId).orElse(null);
-        if (training != null && training.getActivity().getId() == activityId) {
+        if (isNotEmpty(training) && training.getActivity().getId() == activityId) {
             training.setRemoved(true);
             trainingRepository.save(training);
             return true;

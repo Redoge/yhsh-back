@@ -27,8 +27,8 @@ public class LoginService {
         return loginRepository.findAllByUserId(id);
     }
     public void addLogin(Login login){
-        LOGGER.info("Login: " + login.getUser().getUsername());
         loginRepository.save(login);
+        LOGGER.info("Login: " + login.getUser().getUsername());
     }
     public List<Login> getAllLogin(){
         LOGGER.debug("Get all login");
