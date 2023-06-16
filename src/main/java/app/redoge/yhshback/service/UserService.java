@@ -5,8 +5,7 @@ import app.redoge.yhshback.entity.User;
 import app.redoge.yhshback.entity.enums.UserRole;
 import app.redoge.yhshback.exception.UserNotFoundException;
 import app.redoge.yhshback.pojo.UserUpdateRequestPojo;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import app.redoge.yhshback.repository.UserRepository;

@@ -1,4 +1,4 @@
-package app.redoge.yhshback.pojo;
+package app.redoge.yhshback.dto;
 
-public record ErrorPojo(String message, int code) {
+public record ErrorDto(String message, int code) {
 }

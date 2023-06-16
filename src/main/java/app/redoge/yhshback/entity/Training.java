@@ -27,6 +27,9 @@ public class Training {
     @Column(name = "training_start_time")
     private LocalDateTime startTime;
 
+    @Column(name = "training_end_time")
+    private LocalDateTime endTime;
+
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 

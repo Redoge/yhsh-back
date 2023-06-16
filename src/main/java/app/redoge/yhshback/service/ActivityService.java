@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
@@ -23,9 +24,14 @@ public class ActivityService {
     public ActivityService(ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
+    @Transactional
+    public List<Activity> getAll(long id){
+        LOGGER.debug("Activity all activity " + id);
+        return activityRepository.findAll();
+    }
 
     @Transactional
-    public Optional<Activity> getActivityById(long id){
+    public Optional<Activity> getById(long id){
         LOGGER.debug("Activity by id " + id);
         return activityRepository.findById(id);
     }
@@ -51,7 +57,7 @@ public class ActivityService {
 
     @Transactional
     public void removeById(long activityId) {
-        Activity activity = getActivityById(activityId).orElse(null);
+        Activity activity = getById(activityId).orElse(null);
         if(isNotEmpty(activity)) {
             activity.setRemoved(true);
             save(activity);
