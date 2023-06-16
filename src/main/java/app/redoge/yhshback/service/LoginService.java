@@ -3,6 +3,7 @@ package app.redoge.yhshback.service;
 
 import app.redoge.yhshback.entity.Login;
 import app.redoge.yhshback.entity.User;
+import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.repository.LoginRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,5 +42,9 @@ public class LoginService {
                 .loginTime(LocalDateTime.now())
                 .build();
         addLogin(login);
+    }
+
+    public Login getById(long id) throws NotFoundException {
+        return loginRepository.findById(id).orElseThrow(() -> new NotFoundException("Login", id));
     }
 }
