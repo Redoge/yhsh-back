@@ -9,6 +9,7 @@ import app.redoge.yhshback.repository.ActivityRepository;
 import app.redoge.yhshback.repository.TrainingRepository;
 import app.redoge.yhshback.utill.TrainingUtil;
 import app.redoge.yhshback.utill.filter.TrainingFilter;
+import app.redoge.yhshback.utill.validators.DtoValidators;
 import jakarta.transaction.Transactional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,12 +33,14 @@ public class TrainingService {
     private final ActivityRepository activityRepository;
     private final TrainingFilter trainingFilter;
     private final TrainingUtil trainingUtil;
+    private final DtoValidators dtoValidators;
 
-    public TrainingService(TrainingRepository trainingRepository, ActivityRepository activityRepository, TrainingFilter trainingFilter, TrainingUtil trainingUtil) {
+    public TrainingService(TrainingRepository trainingRepository, ActivityRepository activityRepository, TrainingFilter trainingFilter, TrainingUtil trainingUtil, DtoValidators dtoValidators) {
         this.trainingRepository = trainingRepository;
         this.activityRepository = activityRepository;
         this.trainingFilter = trainingFilter;
         this.trainingUtil = trainingUtil;
+        this.dtoValidators = dtoValidators;
     }
 
     public Training save(Training training) throws BadRequestException {
@@ -122,6 +125,9 @@ public class TrainingService {
     }
 
     public Training saveByDto(TrainingSaveRequestDto trainingDto) throws NotFoundException, BadRequestException {
+        if(!dtoValidators.trainingSaveRequestDtoIsValid(trainingDto))
+            throw new BadRequestException("Training not saved!!!");
+
         var activity = activityRepository.findByIdAndRemoved(trainingDto.activityId(), false)
                 .orElseThrow(() -> new NotFoundException("Activity", trainingDto.activityId()));
         return saveAndAddToActivity(Training.builder()
