@@ -1,6 +1,7 @@
 package app.redoge.yhshback.entity;
 
 import app.redoge.yhshback.entity.enums.UserRole;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -41,6 +42,7 @@ public class User {
     private int heightSm;
 
     @OneToMany(mappedBy = "creator", fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("creator")
     private List<Activity> activities;
 
     @Column(name = "user_enabled")
