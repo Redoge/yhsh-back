@@ -1,6 +1,8 @@
 package app.redoge.yhshback.utill.validators;
 
 import app.redoge.yhshback.dto.ActivitySaveRequestDto;
+import app.redoge.yhshback.dto.AuthenticationRequestDto;
+import app.redoge.yhshback.dto.RegisterRequestDto;
 import app.redoge.yhshback.dto.TrainingSaveRequestDto;
 import org.springframework.stereotype.Service;
 
@@ -19,5 +21,16 @@ public class DtoValidators {
                 dto.userId() > 0 &&
                 dto.count() > 0 &&
                 isNotEmpty(dto.start());
+    }
+
+    public boolean registerRequestDtoIsValid(RegisterRequestDto request) {
+        return isNotEmpty(request.username()) &&
+                isNotEmpty(request.password()) &&
+                isNotEmpty(request.email());
+    }
+
+    public boolean authenticationRequestDtoIsValid(AuthenticationRequestDto request) {
+        return isNotEmpty(request.username()) &&
+                isNotEmpty(request.password());
     }
 }

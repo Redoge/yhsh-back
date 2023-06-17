@@ -9,6 +9,9 @@ import app.redoge.yhshback.pojo.UserUpdateRequestPojo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import app.redoge.yhshback.repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,14 +24,12 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 @Service
 @Transactional
-public class UserService {
+public class UserService implements  UserDetailsService {
     private static final Logger LOGGER = LogManager.getLogger(UserService.class);
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public User findUserByEmail(String email) {
@@ -41,43 +42,11 @@ public class UserService {
         }
     }
 
-    public User findUserByUserName(String userName) {
-        if(isNotEmpty(userName)) {
-            LOGGER.debug("Found user by username " + userName);
-            return userRepository.findByUsername(userName);
-        }else{
-            LOGGER.error("User not found by username. Null or len = 0");
-            return null;
-        }
+    public User findUserByUsername(String userName) throws UserNotFoundException {
+        return userRepository.findByUsername(userName).orElseThrow(()->new UserNotFoundException(userName));
     }
 
-    public void saveUser(User user) {
-        if(isNotEmpty(user)) {
-            save(user, UserRole.USER);
-            LOGGER.info("User saved " + user.getUsername());
-        }else{
-            LOGGER.error("User not saved");
-        }
-    }
-    public void saveAdmin(User user) {
-        if(isNotEmpty(user)) {
-            save(user, UserRole.ADMIN);
-            LOGGER.info("Admin saved " + user.getUsername());
-        }else{
-            LOGGER.error("Admin not saved");
-        }
-    }
-    public void save(User user, UserRole userRole) {
-        if(isNotEmpty(user.getUsername()) && isNotEmpty(user.getEmail()) && isNotEmpty(user.getPassword()) &&
-                !userExistsByEmail(user.getEmail()) && !userExistsByUsername(user.getUsername())){
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            user.setUserRole(userRole);
-            userRepository.save(user);
-            LOGGER.info("User  saved successfully: " + user.getUsername());
-        }else{
-            LOGGER.error("User not saved");
-        }
-    }
+
 
     public void update(User user){
         if(isNotEmpty(user)) {
@@ -114,12 +83,7 @@ public class UserService {
         }
     }
 
-    public boolean userExistsByUsername(String username) {
-        return userRepository.existsByUsername(username);
-    }
-    public boolean userExistsByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
+
 
     public void changeUserRoleByUserId(Long userId){
         Optional<User> userOptional = userRepository.findById(userId);
@@ -153,5 +117,10 @@ public class UserService {
 
     public User getUserById(long id) throws UserNotFoundException {
         return userRepository.findById(id).orElseThrow(()->new UserNotFoundException(id));
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
+        return userRepository.findByUsername(username).orElseThrow(()->new UsernameNotFoundException(username));
     }
 }
