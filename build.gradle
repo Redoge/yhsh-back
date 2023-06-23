@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'app.redoge'
-version = '0.0.2-dev'
+version = '0.0.4-dev'
 
 java {
     sourceCompatibility = '17'

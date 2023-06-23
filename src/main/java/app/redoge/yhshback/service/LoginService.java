@@ -47,4 +47,8 @@ public class LoginService {
     public Login getById(long id) throws NotFoundException {
         return loginRepository.findById(id).orElseThrow(() -> new NotFoundException("Login", id));
     }
+
+    public List<Login> getAllLoginByUserUsername(String username) {
+        return loginRepository.findAllByUserUsername(username);
+    }
 }

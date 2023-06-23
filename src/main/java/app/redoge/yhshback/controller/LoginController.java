@@ -18,9 +18,12 @@ public class LoginController {
     private final LoginService loginService;
 
     @GetMapping
-    public List<Login> getAll(@RequestParam(value = "userId", required = false) Long userId){
+    public List<Login> getAll(@RequestParam(value = "userId", required = false) Long userId,
+                              @RequestParam(value = "username", required = false) String username){
         if (isNotEmpty(userId))
             return loginService.getAllLoginByUserId(userId);
+        if (isNotEmpty(username))
+            return loginService.getAllLoginByUserUsername(username);
         return loginService.getAllLogin();
     }
     @GetMapping("/{id}")

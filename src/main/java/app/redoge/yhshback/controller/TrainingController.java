@@ -21,9 +21,12 @@ public class TrainingController {
     private final TrainingService trainingService;
 
     @GetMapping
-    public List<Training> getAllTrainings(@RequestParam(value = "userId", required = false) Long userId) {
+    public List<Training> getAllTrainings(@RequestParam(value = "userId", required = false) Long userId,
+                                          @RequestParam(value = "username", required = false) String username) {
         if (isNotEmpty(userId))
             return trainingService.getAllTrainingByUserId(userId);
+        if (isNotEmpty(username))
+            return trainingService.getAllTrainingByUserUsername(username);
         return trainingService.getAllTraining();
     }
 

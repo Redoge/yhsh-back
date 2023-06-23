@@ -1,6 +1,6 @@
 package app.redoge.yhshback.pojo;
 
 
-public record UserUpdateRequestPojo(String sex, int weightKg, int heightSm) {
+public record UserUpdateRequestPojo(String username, String sex, int weightKg, int heightSm) {
 
 }

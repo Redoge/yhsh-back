@@ -15,4 +15,12 @@ public interface ActivityRepository  extends JpaRepository<Activity,  Long> {
     Optional<Activity> findByIdAndRemoved(long activityId, boolean isRemoved);
 
     List<Activity> findByCreatorId(Long userId);
+
+    List<Activity> findByCreatorUsername(String username);
+
+    List<Activity> findByCreatorIdAndRemoved(Long userId, boolean b);
+
+    List<Activity> findByCreatorUsernameAndRemoved(String username, boolean b);
+
+    List<Activity> findAllByRemoved(boolean b);
 }

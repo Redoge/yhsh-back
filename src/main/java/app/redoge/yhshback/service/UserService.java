@@ -3,16 +3,17 @@ package app.redoge.yhshback.service;
 
 import app.redoge.yhshback.entity.User;
 import app.redoge.yhshback.entity.enums.UserRole;
+import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.UserNotFoundException;
 import app.redoge.yhshback.pojo.UserUpdateRequestPojo;
 
+import app.redoge.yhshback.utill.validators.DtoValidators;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import app.redoge.yhshback.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +28,11 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 public class UserService implements  UserDetailsService {
     private static final Logger LOGGER = LogManager.getLogger(UserService.class);
     private final UserRepository userRepository;
+    private final DtoValidators dtoValidators;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, DtoValidators dtoValidators) {
         this.userRepository = userRepository;
+        this.dtoValidators = dtoValidators;
     }
 
     public User findUserByEmail(String email) {
@@ -122,5 +125,21 @@ public class UserService implements  UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         return userRepository.findByUsername(username).orElseThrow(()->new UsernameNotFoundException(username));
+    }
+
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(()->new UsernameNotFoundException(username));
+    }
+
+    @Transactional
+    public User updateUserByUserUpdateRequest(UserUpdateRequestPojo userUpdateRequest) throws UserNotFoundException, BadRequestException {
+        if(!dtoValidators.userUpdateRequestPojoIsValid(userUpdateRequest)){
+            throw new BadRequestException(String.format("User with username %s not updated!!!", userUpdateRequest.username()));
+        }
+        var user = getUserByUsername(userUpdateRequest.username());
+        user.setHeightSm(userUpdateRequest.heightSm());
+        user.setWeightKg(userUpdateRequest.weightKg());
+        user.setSex(userUpdateRequest.sex());
+        return userRepository.save(user);
     }
 }

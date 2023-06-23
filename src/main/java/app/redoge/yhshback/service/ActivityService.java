@@ -12,6 +12,7 @@ import app.redoge.yhshback.utill.validators.DtoValidators;
 import jakarta.transaction.Transactional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class ActivityService {
     }
     @Transactional
     public List<Activity> getAll(){
-        return activityRepository.findAll();
+        return activityRepository.findAllByRemoved(false);
     }
 
     @Transactional
@@ -61,15 +62,15 @@ public class ActivityService {
     }
 
     public List<Activity> getAllByCreatorId(Long userId) {
-        return activityRepository.findByCreatorId(userId);
+        return activityRepository.findByCreatorIdAndRemoved(userId, false);
     }
 
-    public Activity saveByDto(ActivitySaveRequestDto activitySaveRequestDto) throws UserNotFoundException, BadRequestException {
+    public Activity saveByDto(ActivitySaveRequestDto activitySaveRequestDto) throws BadRequestException {
         if(!dtoValidators.activitySaveRequestDtoIsValid(activitySaveRequestDto))
             throw new BadRequestException("Activity not valid!!!");
 
-        var creator = userRepository.findById(activitySaveRequestDto.creatorId())
-                .orElseThrow(()-> new UserNotFoundException(activitySaveRequestDto.creatorId()));
+        var creator = userRepository.findByUsername(activitySaveRequestDto.username())
+                .orElseThrow(()-> new UsernameNotFoundException(activitySaveRequestDto.username()));
 
         var activity = Activity.builder()
                 .creator(creator)
@@ -78,5 +79,9 @@ public class ActivityService {
                 .notation(activitySaveRequestDto.notation())
                 .build();
         return  activityRepository.save(activity);
+    }
+
+    public List<Activity> getAllByCreatorUsername(String username) {
+        return activityRepository.findByCreatorUsernameAndRemoved(username, false);
     }
 }

@@ -1,5 +1,6 @@
 package app.redoge.yhshback.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +20,7 @@ public class Training {
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("trainings")
     private Activity activity;
 
     @Column(name = "training_count")
@@ -31,6 +33,7 @@ public class Training {
     private LocalDateTime endTime;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("activities")
     private User user;
 
     @Column(name = "training_is_removed")

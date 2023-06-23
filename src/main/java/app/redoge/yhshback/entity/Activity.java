@@ -28,6 +28,7 @@ public class Activity {
     private String notation;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("activities")
     private User creator;
 
     @OneToMany(fetch = FetchType.EAGER)

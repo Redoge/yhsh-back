@@ -21,9 +21,12 @@ public class ActivityController {
     private final ActivityService activityService;
 
     @GetMapping
-    public List<Activity> getAll(@RequestParam(value = "creatorId", required = false) Long userId){
+    public List<Activity> getAll(@RequestParam(value = "creatorId", required = false) Long userId,
+                                 @RequestParam(value = "username", required = false) String username){
         if(isNotEmpty(userId))
             return activityService.getAllByCreatorId(userId);
+        if(isNotEmpty(username))
+            return activityService.getAllByCreatorUsername(username);
         return activityService.getAll();
     }
     @GetMapping("/{id}")
@@ -31,7 +34,7 @@ public class ActivityController {
         return activityService.getById(id);
     }
     @PostMapping
-    public Activity create(@RequestBody ActivitySaveRequestDto activitySaveRequestDto) throws UserNotFoundException, BadRequestException {
+    public Activity create(@RequestBody ActivitySaveRequestDto activitySaveRequestDto) throws BadRequestException {
         return activityService.saveByDto(activitySaveRequestDto);
     }
     @DeleteMapping("/{id}")
