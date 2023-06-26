@@ -25,4 +25,6 @@ public interface TrainingRepository  extends JpaRepository<Training, Long> {
     List<Training> getTrainingByActivityCreatorUsernameAndRemovedAndActivityRemoved(String username, boolean b, boolean b1);
 
     List<Training> findAllByRemovedAndActivityRemoved(boolean b, boolean b1);
+
+    Optional<Training> findByIdAndRemovedAndActivityRemoved(long id, boolean b, boolean b1);
 }

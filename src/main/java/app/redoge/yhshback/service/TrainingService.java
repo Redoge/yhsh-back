@@ -68,7 +68,7 @@ public class TrainingService {
 
 
     public Training getTrainingById(long id) throws NotFoundException {
-        return trainingRepository.findByIdAndRemoved(id, false)
+        return trainingRepository.findByIdAndRemovedAndActivityRemoved(id, false, false)
                 .orElseThrow(() -> new NotFoundException("Training", id));
     }
 
