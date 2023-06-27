@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User updateUser(@RequestBody UserUpdateRequestPojo userUpdateRequest) throws UserNotFoundException, BadRequestException {
+    public User updateUser(@RequestBody UserUpdateRequestPojo userUpdateRequest) throws  BadRequestException {
         return userService.updateUserByUserUpdateRequest(userUpdateRequest);
     }
 }

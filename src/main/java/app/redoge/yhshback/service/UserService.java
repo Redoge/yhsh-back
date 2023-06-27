@@ -11,6 +11,8 @@ import app.redoge.yhshback.utill.validators.DtoValidators;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import app.redoge.yhshback.repository.UserRepository;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,48 +36,16 @@ public class UserService implements  UserDetailsService {
         this.userRepository = userRepository;
         this.dtoValidators = dtoValidators;
     }
-
-    public User findUserByEmail(String email) {
-        if(isNotEmpty(email)) {
-            LOGGER.debug("Found user by email " + email);
-            return userRepository.findByEmail(email);
-        }else{
-            LOGGER.error("User not found by email  Null or len = 0");
-            return null;
-        }
+    @PreAuthorize("#username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
+    public User findUserByUsername(String username) throws UserNotFoundException {
+        return userRepository.findByUsername(username).orElseThrow(()->new UserNotFoundException(username));
     }
-
-    public User findUserByUsername(String userName) throws UserNotFoundException {
-        return userRepository.findByUsername(userName).orElseThrow(()->new UserNotFoundException(userName));
-    }
-
-
-
-    public void update(User user){
-        if(isNotEmpty(user)) {
-            userRepository.save(user);
-            LOGGER.info("User updated: " + user.getUsername());
-        }else{
-            LOGGER.error("User not updated");
-        }
-    }
-    public void update(User user, UserUpdateRequestPojo up){
-        if(isNotEmpty(user)) {
-            if(up.heightSm()>50&&up.heightSm()<300) user.setHeightSm(up.heightSm());
-            if(up.weightKg()>10&&up.weightKg()<300) user.setWeightKg(up.weightKg());
-            if(isNotEmpty(up.sex())&&(up.sex().equals("Male") || up.sex().equals("Female"))) user.setSex(up.sex());
-            userRepository.save(user);
-            LOGGER.info("User updated: " + user.getUsername());
-        }else{
-            LOGGER.error("User not updated");
-        }
-    }
-
+    @PreAuthorize("hasRole('ADMIN')")
     public List<User> getAllUsers(){
         LOGGER.debug("Get all users");
         return userRepository.findAll();
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     public List<User> getAllUsersByUserRole(UserRole userRole){
         if(isNotEmpty(userRole)){
             LOGGER.debug("Get all users by user role " + userRole);
@@ -85,9 +55,7 @@ public class UserService implements  UserDetailsService {
             return new ArrayList<>();
         }
     }
-
-
-
+    @PreAuthorize("hasRole('ADMIN')")
     public void changeUserRoleByUserId(Long userId){
         Optional<User> userOptional = userRepository.findById(userId);
         if(userOptional.isPresent()){
@@ -105,7 +73,7 @@ public class UserService implements  UserDetailsService {
             LOGGER.error("Error to change user role");
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     public void changeEnabledByUserId(Long userId){
         Optional<User> userOptional = userRepository.findById(userId);
         if(userOptional.isPresent()){
@@ -117,7 +85,7 @@ public class UserService implements  UserDetailsService {
             LOGGER.error("User enabled not changed");
         }
     }
-
+    @PostAuthorize("returnObject.username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
     public User getUserById(long id) throws UserNotFoundException {
         return userRepository.findById(id).orElseThrow(()->new UserNotFoundException(id));
     }
@@ -126,13 +94,14 @@ public class UserService implements  UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         return userRepository.findByUsername(username).orElseThrow(()->new UsernameNotFoundException(username));
     }
-
+    @PostAuthorize("#username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(()->new UsernameNotFoundException(username));
     }
 
     @Transactional
-    public User updateUserByUserUpdateRequest(UserUpdateRequestPojo userUpdateRequest) throws UserNotFoundException, BadRequestException {
+    @PreAuthorize("#userUpdateRequest.username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
+    public User updateUserByUserUpdateRequest(UserUpdateRequestPojo userUpdateRequest) throws  BadRequestException {
         if(!dtoValidators.userUpdateRequestPojoIsValid(userUpdateRequest)){
             throw new BadRequestException(String.format("User with username %s not updated!!!", userUpdateRequest.username()));
         }

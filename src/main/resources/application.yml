@@ -9,9 +9,9 @@ spring:
       password: admin
       name: admin
   datasource:
-    url: jdbc:mysql://130.162.63.40:3306/yhsh_test
-    username: test
-    password: Test_1670
+    url: jdbc:mysql://localhost:3306/yhshback
+    username: redoge
+    password: redoge1670
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     generate-ddl: false
