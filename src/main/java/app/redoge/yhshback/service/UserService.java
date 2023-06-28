@@ -4,9 +4,11 @@ package app.redoge.yhshback.service;
 import app.redoge.yhshback.entity.User;
 import app.redoge.yhshback.entity.enums.UserRole;
 import app.redoge.yhshback.exception.BadRequestException;
+import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.exception.UserNotFoundException;
 import app.redoge.yhshback.pojo.UserUpdateRequestPojo;
 
+import app.redoge.yhshback.utill.enums.UserFilterParam;
 import app.redoge.yhshback.utill.validators.DtoValidators;
 import app.redoge.yhshback.repository.UserRepository;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 @Service
@@ -97,5 +100,26 @@ public class UserService implements  UserDetailsService {
         user.setWeightKg(userUpdateRequest.weightKg());
         user.setSex(userUpdateRequest.sex());
         return userRepository.save(user);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<User> getAllUsersByEnabled(boolean filter) {
+        return userRepository.findAllByEnabled(filter);
+    }
+
+    public List<User> getUsersByFilter(String param, String value) throws NotFoundException {
+        List<User> users = null;
+        if(isNotEmpty(param) && isNotEmpty(value)){
+            if(param.equalsIgnoreCase(UserFilterParam.ROLE.toString())){
+                users = getAllUsersByUserRole(UserRole.findByName(value));
+            } else if (param.equalsIgnoreCase(UserFilterParam.ENABLED.toString())) {
+                if(value.equalsIgnoreCase("true")){
+                    users = getAllUsersByEnabled(true);
+                } else if(value.equalsIgnoreCase("false")){
+                    users = getAllUsersByEnabled(false);
+                }
+            }
+        }
+        return !isNotEmpty(users) ? users : getAllUsers();
     }
 }

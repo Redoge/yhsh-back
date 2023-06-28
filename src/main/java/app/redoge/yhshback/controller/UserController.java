@@ -2,6 +2,7 @@ package app.redoge.yhshback.controller;
 
 import app.redoge.yhshback.entity.User;
 import app.redoge.yhshback.exception.BadRequestException;
+import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.exception.UserNotFoundException;
 import app.redoge.yhshback.pojo.UserUpdateRequestPojo;
 import app.redoge.yhshback.service.UserService;
@@ -20,8 +21,9 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<User> getUsers() {
-        return userService.getAllUsers();
+    public List<User> getUsers(@RequestParam(value = "filterParam", required = false) String param,
+                               @RequestParam(value = "filterValue", required = false) String value) throws NotFoundException {
+        return userService.getUsersByFilter(param, value);
     }
     @GetMapping("/{idOrUsername}")
     public User getUserById(@PathVariable String idOrUsername) throws UserNotFoundException {
