@@ -26,8 +26,8 @@ import static app.redoge.yhshback.utill.paths.Constants.*;
 @AllArgsConstructor
 @EnableMethodSecurity()
 public class SecurityConfig {
-    private static final String allPath = "/**";
-    private static final String allElements = "*";
+    private static final String ALL_PATH = "/**";
+    private static final String ALL_ELEMENTS = "*";
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
     @Bean
@@ -37,14 +37,14 @@ public class SecurityConfig {
                 .cors(this::corsConfiguration)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                USERS_PATH.concat(allPath),
-                                LOGINS_PATH.concat(allPath),
-                                TRAININGS_PATH.concat(allPath),
-                                ACTIVITIES_PATH.concat(allPath))
+                                USERS_PATH.concat(ALL_PATH),
+                                LOGINS_PATH.concat(ALL_PATH),
+                                TRAININGS_PATH.concat(ALL_PATH),
+                                ACTIVITIES_PATH.concat(ALL_PATH))
                         .hasAnyAuthority(
                                 UserRole.USER.name(),
                                 UserRole.ADMIN.name())
-                        .requestMatchers(AUTH_PATH.concat(allPath))
+                        .requestMatchers(AUTH_PATH.concat(ALL_PATH))
                         .permitAll()
                 )
                 .sessionManagement(Customizer.withDefaults())
@@ -55,14 +55,14 @@ public class SecurityConfig {
 
     private void corsConfiguration(CorsConfigurer<HttpSecurity> request){
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(allElements));
-        configuration.setAllowedMethods(List.of(allElements));
-        configuration.setAllowedHeaders(List.of(allElements));
-        configuration.setExposedHeaders(List.of(allElements));
-        configuration.setAllowedOriginPatterns(List.of(allElements));
+        configuration.setAllowedOrigins(List.of(ALL_ELEMENTS));
+        configuration.setAllowedMethods(List.of(ALL_ELEMENTS));
+        configuration.setAllowedHeaders(List.of(ALL_ELEMENTS));
+        configuration.setExposedHeaders(List.of(ALL_ELEMENTS));
+        configuration.setAllowedOriginPatterns(List.of(ALL_ELEMENTS));
         configuration.setMaxAge(3600L);
         final var source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration(allPath, configuration);
+        source.registerCorsConfiguration(ALL_PATH, configuration);
         request.configurationSource(source);
     }
 }
