@@ -8,8 +8,6 @@ import app.redoge.yhshback.exception.UserNotFoundException;
 import app.redoge.yhshback.pojo.UserUpdateRequestPojo;
 
 import app.redoge.yhshback.utill.validators.DtoValidators;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import app.redoge.yhshback.repository.UserRepository;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +26,6 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 @Service
 @Transactional
 public class UserService implements  UserDetailsService {
-    private static final Logger LOGGER = LogManager.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final DtoValidators dtoValidators;
 
@@ -42,16 +39,13 @@ public class UserService implements  UserDetailsService {
     }
     @PreAuthorize("hasRole('ADMIN')")
     public List<User> getAllUsers(){
-        LOGGER.debug("Get all users");
         return userRepository.findAll();
     }
     @PreAuthorize("hasRole('ADMIN')")
     public List<User> getAllUsersByUserRole(UserRole userRole){
         if(isNotEmpty(userRole)){
-            LOGGER.debug("Get all users by user role " + userRole);
             return userRepository.findByUserRole(userRole);
         }else{
-            LOGGER.error("Error to get all user by user role");
             return new ArrayList<>();
         }
     }
@@ -63,14 +57,10 @@ public class UserService implements  UserDetailsService {
             UserRole role = user.getUserRole();
             if(role.equals(UserRole.ADMIN)){
                 user.setUserRole(UserRole.USER);
-                LOGGER.info("Changed user role: admin -> user for " + user.getUsername());
             }else if(role.equals(UserRole.USER)){
                 user.setUserRole(UserRole.ADMIN);
-                LOGGER.info("Changed user role: user -> admin for " + user.getUsername());
             }
             userRepository.save(user);
-        }else{
-            LOGGER.error("Error to change user role");
         }
     }
     @PreAuthorize("hasRole('ADMIN')")
@@ -80,9 +70,6 @@ public class UserService implements  UserDetailsService {
             User user = userOptional.get();
             user.setEnabled(!user.isEnabled());
             userRepository.save(user);
-            LOGGER.info("User enabled changed to "+ user.isEnabled() +" for " + user.getUsername());
-        }else{
-            LOGGER.error("User enabled not changed");
         }
     }
     @PostAuthorize("returnObject.username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
