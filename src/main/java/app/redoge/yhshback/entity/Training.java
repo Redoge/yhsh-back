@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 
@@ -13,7 +15,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Training {
+public class Training implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1905122041953331207L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "training_id")
@@ -32,9 +36,6 @@ public class Training {
     @Column(name = "training_end_time")
     private LocalDateTime endTime;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnoreProperties("activities")
-    private User user;
 
     @Column(name = "training_is_removed")
     private boolean removed = false;

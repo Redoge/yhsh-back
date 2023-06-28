@@ -10,8 +10,7 @@ import app.redoge.yhshback.repository.TrainingRepository;
 
 import app.redoge.yhshback.utill.validators.DtoValidators;
 import jakarta.transaction.Transactional;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,6 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 @Service
 @Transactional
 public class TrainingService {
-    private static final Logger LOGGER = LogManager.getLogger(TrainingService.class);
     private final TrainingRepository trainingRepository;
     private final ActivityRepository activityRepository;
     private final DtoValidators dtoValidators;
@@ -32,17 +30,14 @@ public class TrainingService {
     public TrainingService(TrainingRepository trainingRepository, ActivityRepository activityRepository, DtoValidators dtoValidators) {
         this.trainingRepository = trainingRepository;
         this.activityRepository = activityRepository;
-
         this.dtoValidators = dtoValidators;
     }
 
     public Training save(Training training) throws BadRequestException {
         if (training.getCount() > 0 &&
                 isNotEmpty(training.getActivity()) && isNotEmpty(training.getStartTime())) {
-            LOGGER.info("Saved training: " + training.getActivity().getName());
             return trainingRepository.save(training);
         } else {
-            LOGGER.error("Error to saving training");
             throw new BadRequestException("Training not saved!!!");
         }
     }
@@ -50,12 +45,10 @@ public class TrainingService {
 
     @PostAuthorize("returnObject.activity.creator.username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
     public Training getById(long trainingId) throws NotFoundException {
-        LOGGER.debug("Getting training by training id " + trainingId);
         return trainingRepository.findById(trainingId).orElseThrow(()->new NotFoundException("Training", trainingId));
     }
     @PreAuthorize("@trainingService.getById(#trainingId).activity.creator.username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
     public boolean removeById(long trainingId) throws NotFoundException {
-        LOGGER.debug("Removing training by training id " + trainingId);
         Training training = getById(trainingId);
         training.setRemoved(true);
         trainingRepository.save(training);
@@ -92,7 +85,6 @@ public class TrainingService {
     }
     @PreAuthorize("@userService.getUserById(#userId).username == authentication.name or hasRole('ADMIN')")
     public List<Training> getAllTrainingByUserId(Long userId) {
-        LOGGER.debug("Getting all trainings by user id " + userId);
         return trainingRepository.getTrainingByActivityCreatorIdAndRemovedAndActivityRemoved(userId, false, false)
                 .stream().sorted(Comparator.comparing(Training::getStartTime).reversed()).toList();
     }

@@ -10,8 +10,6 @@ import app.redoge.yhshback.repository.UserRepository;
 import app.redoge.yhshback.utill.validators.DtoValidators;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,7 +24,6 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 @Transactional
 @AllArgsConstructor
 public class ActivityService {
-    private static final Logger LOGGER = LogManager.getLogger(ActivityService.class);
     private final ActivityRepository activityRepository;
     private final UserRepository userRepository;
     private final DtoValidators dtoValidators;
@@ -41,9 +38,6 @@ public class ActivityService {
     public void save(Activity activity) {
         if(isNotEmpty(activity.getName())){
             activityRepository.save(activity);
-            LOGGER.info("Saving activity " + activity.getName());
-        }else{
-            LOGGER.error("Activity name null or empty");
         }
     }
     @PreAuthorize("#activitySaveRequestDto.username().equalsIgnoreCase(authentication.name)")
@@ -68,7 +62,6 @@ public class ActivityService {
         Activity activity = getById(activityId);
         activity.setRemoved(true);
         save(activity);
-        LOGGER.info("Remove activity " + activity.getName());
         return true;
     }
     @PreAuthorize("#username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
@@ -83,7 +76,6 @@ public class ActivityService {
     @Transactional
     @PostAuthorize("returnObject.creator.username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
     public Activity getById(long id) throws NotFoundException {
-        LOGGER.debug("Activity by id " + id);
         return activityRepository.findByIdAndRemoved(id, false).orElseThrow(()-> new NotFoundException("Activity", id));
     }
 }

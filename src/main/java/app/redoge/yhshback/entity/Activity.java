@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +17,10 @@ import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Activity {
+public class Activity implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1905122041952221207L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "activity_id")
