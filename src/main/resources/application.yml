@@ -9,6 +9,9 @@ spring:
       password: admin
       name: admin
   datasource:
+#    url: jdbc:mysql://130.162.63.40:3306/yhsh_test
+#    username: test
+#    password: Test_1670
     url: jdbc:mysql://localhost:3306/yhshback
     username: redoge
     password: redoge1670
@@ -21,6 +24,7 @@ spring:
 #        show_sql: true
     hibernate:
       ddl-auto: update
-
+api:
+  version: 1
 jwt:
   secret: dtxkhjhvlgkibjtisnmgfdblbgugzorwhgwaiszmpxcbreewohqimfczfmbxfaoxccrfrvtnrviylbsqllmcrfvbhmfusxbjbeppahlhidyntgxutdtrexyhslayfcqdzewuqdznwmvutizuxwgiucdzhffkbjninlkbbchcnpbecbbcdavupjxqmaldxlmerqohmyqzhveftrcrygifcrahmwvaticryhtrccpikyvjktckyqfrthgsgahrcawwqsfqxsqxcbpnwwdfvxxwmvzwgmhrjyyxjvbfsxlexxejtcspunxhochztulcsdokqdowabhppaoydajfxlaoskzfsxxvcrncjswnyzxaocchkequjnjthjogocfsnpiubfysrlpvguconmppiguyvmlehidnzslhbeopdanxkamncjincmuwvqsteyjkailwmwwdxdkeamlzjhqjcniqewauxnjplckmknrjghavhydjlfogirqgwimcezyocbxs
