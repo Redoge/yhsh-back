@@ -3,7 +3,6 @@ package app.redoge.yhshback.service;
 
 import app.redoge.yhshback.dto.ActivitySaveRequestDto;
 import app.redoge.yhshback.entity.Activity;
-import app.redoge.yhshback.exception.BadCredentialsException;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.repository.ActivityRepository;
