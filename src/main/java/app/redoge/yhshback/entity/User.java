@@ -37,7 +37,6 @@ public class User implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @JsonIgnore
     private UserRole userRole;
 
     @Column(name = "user_sex")
@@ -54,7 +53,6 @@ public class User implements UserDetails {
     private List<Activity> activities;
 
     @Column(name = "user_enabled")
-    @JsonIgnore
     private boolean enabled = true;
 
     @Override

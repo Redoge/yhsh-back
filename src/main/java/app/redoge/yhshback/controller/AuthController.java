@@ -20,7 +20,7 @@ public class AuthController {
     private final AuthService authService;
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponseDto> register(@RequestBody RegisterRequestDto request) throws UserIsExistException, BadRequestException {
-        return ResponseEntity.ok(authService.register(request));
+        return ResponseEntity.ok(authService.registerUser(request));
     }
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponseDto> auth(@RequestBody AuthenticationRequestDto request) throws BadRequestException {

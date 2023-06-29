@@ -29,7 +29,7 @@ public class ActivityService {
     private final DtoValidators dtoValidators;
 
     @Transactional
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<Activity> getAll(){
         return activityRepository.findAllByRemoved(false);
     }
@@ -57,24 +57,24 @@ public class ActivityService {
         return  activityRepository.save(activity);
     }
     @Transactional
-    @PreAuthorize("@activityService.getById(#activityId).creator.username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
+    @PreAuthorize("@activityService.getById(#activityId).creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public boolean removeById(long activityId) throws NotFoundException {
         Activity activity = getById(activityId);
         activity.setRemoved(true);
         save(activity);
         return true;
     }
-    @PreAuthorize("#username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
+    @PreAuthorize("#username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public List<Activity> getAllByCreatorUsername(String username) {
         return activityRepository.findByCreatorUsernameAndRemoved(username, false);
     }
 
-    @PreAuthorize("@userService.getUserById(#userId).username == authentication.name or hasRole('ADMIN')")
+    @PreAuthorize("@userService.getUserById(#userId).username == authentication.name or hasAuthority('ADMIN')")
     public List<Activity> getAllByCreatorId(Long userId) {
         return activityRepository.findByCreatorIdAndRemoved(userId, false);
     }
     @Transactional
-    @PostAuthorize("returnObject.creator.username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
+    @PostAuthorize("returnObject.creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public Activity getById(long id) throws NotFoundException {
         return activityRepository.findByIdAndRemoved(id, false).orElseThrow(()-> new NotFoundException("Activity", id));
     }

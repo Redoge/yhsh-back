@@ -23,19 +23,19 @@ public class LoginService {
         this.loginRepository = loginRepository;
     }
 
-    @PreAuthorize("@userService.getUserById(#userId).username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
+    @PreAuthorize("@userService.getUserById(#userId).username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public List<Login> getAllLoginByUserId(long userId){
         return loginRepository.findAllByUserId(userId);
     }
     public void addLogin(Login login){
         loginRepository.save(login);
     }
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<Login> getAllLogin(){
         return loginRepository.findAll();
     }
 
-    @PreAuthorize("#user.username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
+    @PreAuthorize("#user.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public void addLoginByUser(User user) {
         var login = Login.builder()
                 .user(user)
@@ -44,11 +44,11 @@ public class LoginService {
         addLogin(login);
     }
 
-    @PostAuthorize("returnObject.user.username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
+    @PostAuthorize("returnObject.user.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public Login getById(long id) throws NotFoundException {
         return loginRepository.findById(id).orElseThrow(() -> new NotFoundException("Login", id));
     }
-    @PreAuthorize("#username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
+    @PreAuthorize("#username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public List<Login> getAllLoginByUserUsername(String username) {
         return loginRepository.findAllByUserUsername(username);
     }

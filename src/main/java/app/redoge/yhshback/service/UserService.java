@@ -36,15 +36,15 @@ public class UserService implements  UserDetailsService {
         this.userRepository = userRepository;
         this.dtoValidators = dtoValidators;
     }
-    @PreAuthorize("#username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
+    @PreAuthorize("#username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public User findUserByUsername(String username) throws UserNotFoundException {
         return userRepository.findByUsername(username).orElseThrow(()->new UserNotFoundException(username));
     }
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<User> getAllUsers(){
         return userRepository.findAll();
     }
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<User> getAllUsersByUserRole(UserRole userRole){
         if(isNotEmpty(userRole)){
             return userRepository.findByUserRole(userRole);
@@ -52,8 +52,10 @@ public class UserService implements  UserDetailsService {
             return new ArrayList<>();
         }
     }
-    @PreAuthorize("hasRole('ADMIN')")
-    public void changeUserRoleByUserId(Long userId){
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public void changeUserRoleByUserId(Long userId) throws BadRequestException {
+        if (isNull(userId))
+            throw new BadRequestException("User id is null!!!");
         Optional<User> userOptional = userRepository.findById(userId);
         if(userOptional.isPresent()){
             User user = userOptional.get();
@@ -66,8 +68,10 @@ public class UserService implements  UserDetailsService {
             userRepository.save(user);
         }
     }
-    @PreAuthorize("hasRole('ADMIN')")
-    public void changeEnabledByUserId(Long userId){
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public void changeEnabledByUserId(Long userId) throws BadRequestException {
+        if (isNull(userId))
+            throw new BadRequestException("User id is null!!!");
         Optional<User> userOptional = userRepository.findById(userId);
         if(userOptional.isPresent()){
             User user = userOptional.get();
@@ -75,7 +79,7 @@ public class UserService implements  UserDetailsService {
             userRepository.save(user);
         }
     }
-    @PostAuthorize("returnObject.username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
+    @PostAuthorize("returnObject.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public User getUserById(long id) throws UserNotFoundException {
         return userRepository.findById(id).orElseThrow(()->new UserNotFoundException(id));
     }
@@ -84,13 +88,13 @@ public class UserService implements  UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         return userRepository.findByUsername(username).orElseThrow(()->new UsernameNotFoundException(username));
     }
-    @PostAuthorize("#username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
+    @PostAuthorize("#username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(()->new UsernameNotFoundException(username));
     }
 
     @Transactional
-    @PreAuthorize("#userUpdateRequest.username.equalsIgnoreCase(authentication.name) or hasRole('ADMIN')")
+    @PreAuthorize("#userUpdateRequest.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public User updateUserByUserUpdateRequest(UserUpdateRequestPojo userUpdateRequest) throws  BadRequestException {
         if(!dtoValidators.userUpdateRequestPojoIsValid(userUpdateRequest)){
             throw new BadRequestException(String.format("User with username %s not updated!!!", userUpdateRequest.username()));
@@ -102,7 +106,7 @@ public class UserService implements  UserDetailsService {
         return userRepository.save(user);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<User> getAllUsersByEnabled(boolean filter) {
         return userRepository.findAllByEnabled(filter);
     }
@@ -120,6 +124,6 @@ public class UserService implements  UserDetailsService {
                 }
             }
         }
-        return !isNotEmpty(users) ? users : getAllUsers();
+        return isNotEmpty(users) ? users : getAllUsers();
     }
 }

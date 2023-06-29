@@ -36,6 +36,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(this::corsConfiguration)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(ADMIN_PATH.concat("**"))
+                        .hasAuthority(UserRole.ADMIN.name())
                         .requestMatchers(
                                 USERS_PATH.concat(ALL_PATH),
                                 LOGINS_PATH.concat(ALL_PATH),
@@ -44,6 +46,7 @@ public class SecurityConfig {
                         .hasAnyAuthority(
                                 UserRole.USER.name(),
                                 UserRole.ADMIN.name())
+
                         .requestMatchers(AUTH_PATH.concat(ALL_PATH))
                         .permitAll()
                 )

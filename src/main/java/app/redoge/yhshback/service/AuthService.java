@@ -28,23 +28,13 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final DtoValidators dtoValidators;
 
-    public AuthenticationResponseDto register(RegisterRequestDto request) throws UserIsExistException, BadRequestException {
-        if(!dtoValidators.registerRequestDtoIsValid(request))
-            throw new BadRequestException("Bad request!!!");
-
-        if(repository.existsByUsernameOrEmail(request.username(), request.email()))
-            throw new UserIsExistException(request.username(), request.email());
-        var user = User.builder()
-                .username(request.username())
-                .password(passwordEncoder.encode(request.password()))
-                .userRole(UserRole.USER)
-                .email(request.email())
-                .enabled(true)
-                .build();
-        repository.save(user);
-        var jwt = jwtService.generateToken(user);
-        return new AuthenticationResponseDto(jwt);
+    public AuthenticationResponseDto registerUser(RegisterRequestDto request) throws UserIsExistException, BadRequestException {
+        return registerByRequestDtoAndRole(request, UserRole.USER);
     }
+    public AuthenticationResponseDto registerAdmin(RegisterRequestDto request) throws UserIsExistException, BadRequestException {
+        return registerByRequestDtoAndRole(request, UserRole.ADMIN);
+    }
+
 
     public AuthenticationResponseDto auth(AuthenticationRequestDto request) throws BadRequestException {
         if(!dtoValidators.authenticationRequestDtoIsValid(request))
@@ -80,5 +70,22 @@ public class AuthService {
     }
     public boolean userExistsByEmail(String email) {
         return repository.existsByEmail(email);
+    }
+    private AuthenticationResponseDto registerByRequestDtoAndRole(RegisterRequestDto request, UserRole userRole) throws UserIsExistException, BadRequestException {
+        if(!dtoValidators.registerRequestDtoIsValid(request))
+            throw new BadRequestException("Bad request!!!");
+
+        if(repository.existsByUsernameOrEmail(request.username(), request.email()))
+            throw new UserIsExistException(request.username(), request.email());
+        var user = User.builder()
+                .username(request.username())
+                .password(passwordEncoder.encode(request.password()))
+                .userRole(userRole)
+                .email(request.email())
+                .enabled(true)
+                .build();
+        repository.save(user);
+        var jwt = jwtService.generateToken(user);
+        return new AuthenticationResponseDto(jwt);
     }
 }
