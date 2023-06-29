@@ -11,8 +11,10 @@ import app.redoge.yhshback.pojo.UserUpdateRequestPojo;
 import app.redoge.yhshback.utill.enums.UserFilterParam;
 import app.redoge.yhshback.utill.validators.DtoValidators;
 import app.redoge.yhshback.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,14 +30,12 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class UserService implements  UserDetailsService {
     private final UserRepository userRepository;
     private final DtoValidators dtoValidators;
+    private final Authentication authentication;
 
-    public UserService(UserRepository userRepository, DtoValidators dtoValidators) {
-        this.userRepository = userRepository;
-        this.dtoValidators = dtoValidators;
-    }
     @PreAuthorize("#username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public User findUserByUsername(String username) throws UserNotFoundException {
         return userRepository.findByUsername(username).orElseThrow(()->new UserNotFoundException(username));
@@ -59,6 +59,9 @@ public class UserService implements  UserDetailsService {
         Optional<User> userOptional = userRepository.findById(userId);
         if(userOptional.isPresent()){
             User user = userOptional.get();
+            if(user.getUsername().equalsIgnoreCase(authentication.getName())){
+                throw new BadRequestException("You cannot change yourself role!!!");
+            }
             UserRole role = user.getUserRole();
             if(role.equals(UserRole.ADMIN)){
                 user.setUserRole(UserRole.USER);
@@ -75,6 +78,9 @@ public class UserService implements  UserDetailsService {
         Optional<User> userOptional = userRepository.findById(userId);
         if(userOptional.isPresent()){
             User user = userOptional.get();
+            if(user.getUsername().equalsIgnoreCase(authentication.getName())){
+                throw new BadRequestException("You cannot change yourself role!!!");
+            }
             user.setEnabled(!user.isEnabled());
             userRepository.save(user);
         }
