@@ -1,9 +1,11 @@
 package app.redoge.yhshback.controller;
 
 import app.redoge.yhshback.dto.ActivitySaveRequestDto;
+import app.redoge.yhshback.dto.ActivityUpdateDto;
 import app.redoge.yhshback.entity.Activity;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
+import app.redoge.yhshback.exception.UserNotFoundException;
 import app.redoge.yhshback.service.ActivityService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -32,11 +34,15 @@ public class ActivityController {
         return activityService.getById(id);
     }
     @PostMapping
-    public Activity create(@RequestBody ActivitySaveRequestDto activitySaveRequestDto) throws BadRequestException {
+    public Activity create(@RequestBody ActivitySaveRequestDto activitySaveRequestDto) throws BadRequestException, UserNotFoundException {
         return activityService.saveByDto(activitySaveRequestDto);
     }
+    @PostMapping("/{id}")
+    public Activity update(@RequestBody ActivityUpdateDto activityRequestDto, @PathVariable long id) throws NotFoundException, BadRequestException {
+        return activityService.updateByDto(id, activityRequestDto);
+    }
     @DeleteMapping("/{id}")
-    public boolean deleteById(@PathVariable long id) throws NotFoundException {
+    public boolean deleteById(@PathVariable long id) throws NotFoundException, BadRequestException {
         return activityService.removeById(id);
     }
 }

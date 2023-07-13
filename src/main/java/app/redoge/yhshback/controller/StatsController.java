@@ -2,7 +2,7 @@ package app.redoge.yhshback.controller;
 
 import app.redoge.yhshback.entity.User;
 import app.redoge.yhshback.exception.UserNotFoundException;
-import app.redoge.yhshback.pojo.UserActivityStatsPojo;
+import app.redoge.yhshback.dto.UserActivityStatsDto;
 import app.redoge.yhshback.service.StatsService;
 import app.redoge.yhshback.service.UserService;
 import lombok.AllArgsConstructor;
@@ -23,7 +23,7 @@ public class StatsController {
     private final UserService userService;
     private final StatsService statsService;
     @GetMapping("/{usernameOrId}/stats")
-    public List<UserActivityStatsPojo> getStats(@PathVariable String usernameOrId) throws UserNotFoundException {
+    public List<UserActivityStatsDto> getStats(@PathVariable String usernameOrId) throws UserNotFoundException {
         User user;
         if(isCreatable(usernameOrId)){
             user =  userService.getUserById(Integer.parseInt(usernameOrId));

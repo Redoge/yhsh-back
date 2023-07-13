@@ -4,7 +4,7 @@ import app.redoge.yhshback.dto.ActivitySaveRequestDto;
 import app.redoge.yhshback.dto.AuthenticationRequestDto;
 import app.redoge.yhshback.dto.RegisterRequestDto;
 import app.redoge.yhshback.dto.TrainingSaveRequestDto;
-import app.redoge.yhshback.pojo.UserUpdateRequestPojo;
+import app.redoge.yhshback.dto.UserUpdateRequestDto;
 import org.springframework.stereotype.Service;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
@@ -35,7 +35,7 @@ public class DtoValidators {
                 isNotEmpty(request.password());
     }
 
-    public boolean userUpdateRequestPojoIsValid(UserUpdateRequestPojo userUpdateRequest) {
+    public boolean userUpdateRequestDtoIsValid(UserUpdateRequestDto userUpdateRequest) {
         return isNotEmpty(userUpdateRequest.username()) &&
                 userUpdateRequest.heightSm()>=0 &&
                 userUpdateRequest.weightKg()>=0;

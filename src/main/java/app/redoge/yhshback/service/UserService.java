@@ -6,7 +6,7 @@ import app.redoge.yhshback.entity.enums.UserRole;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.exception.UserNotFoundException;
-import app.redoge.yhshback.pojo.UserUpdateRequestPojo;
+import app.redoge.yhshback.dto.UserUpdateRequestDto;
 
 import app.redoge.yhshback.utill.enums.UserFilterParam;
 import app.redoge.yhshback.utill.validators.DtoValidators;
@@ -14,7 +14,6 @@ import app.redoge.yhshback.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
@@ -34,8 +32,6 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 public class UserService implements  UserDetailsService {
     private final UserRepository userRepository;
     private final DtoValidators dtoValidators;
-    private final Authentication authentication;
-
     @PreAuthorize("#username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public User findUserByUsername(String username) throws UserNotFoundException {
         return userRepository.findByUsername(username).orElseThrow(()->new UserNotFoundException(username));
@@ -52,38 +48,26 @@ public class UserService implements  UserDetailsService {
             return new ArrayList<>();
         }
     }
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public void changeUserRoleByUserId(Long userId) throws BadRequestException {
+    @PreAuthorize("hasAuthority('ADMIN') and !(@userService.getUserById(#userId).username.equalsIgnoreCase(authentication.name))")
+    public void changeUserRoleByUserId(Long userId) throws BadRequestException, UserNotFoundException {
         if (isNull(userId))
             throw new BadRequestException("User id is null!!!");
-        Optional<User> userOptional = userRepository.findById(userId);
-        if(userOptional.isPresent()){
-            User user = userOptional.get();
-            if(user.getUsername().equalsIgnoreCase(authentication.getName())){
-                throw new BadRequestException("You cannot change yourself role!!!");
-            }
-            UserRole role = user.getUserRole();
-            if(role.equals(UserRole.ADMIN)){
-                user.setUserRole(UserRole.USER);
-            }else if(role.equals(UserRole.USER)){
-                user.setUserRole(UserRole.ADMIN);
-            }
-            userRepository.save(user);
+        var user = getUserById(userId);
+        var role = user.getUserRole();
+        if(role.equals(UserRole.ADMIN)){
+            user.setUserRole(UserRole.USER);
+        }else if(role.equals(UserRole.USER)){
+            user.setUserRole(UserRole.ADMIN);
         }
+        userRepository.save(user);
     }
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public void changeEnabledByUserId(Long userId) throws BadRequestException {
+    @PreAuthorize("hasAuthority('ADMIN') and !(@userService.getUserById(#userId).username.equalsIgnoreCase(authentication.name))")
+    public void changeEnabledByUserId(Long userId) throws BadRequestException, UserNotFoundException {
         if (isNull(userId))
             throw new BadRequestException("User id is null!!!");
-        Optional<User> userOptional = userRepository.findById(userId);
-        if(userOptional.isPresent()){
-            User user = userOptional.get();
-            if(user.getUsername().equalsIgnoreCase(authentication.getName())){
-                throw new BadRequestException("You cannot change yourself role!!!");
-            }
-            user.setEnabled(!user.isEnabled());
-            userRepository.save(user);
-        }
+        var user = getUserById(userId);
+        user.setEnabled(!user.isEnabled());
+        userRepository.save(user);
     }
     @PostAuthorize("returnObject.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public User getUserById(long id) throws UserNotFoundException {
@@ -92,7 +76,7 @@ public class UserService implements  UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-        return userRepository.findByUsername(username).orElseThrow(()->new UsernameNotFoundException(username));
+        return getUserByUsername(username);
     }
     @PostAuthorize("#username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public User getUserByUsername(String username) {
@@ -101,10 +85,9 @@ public class UserService implements  UserDetailsService {
 
     @Transactional
     @PreAuthorize("#userUpdateRequest.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
-    public User updateUserByUserUpdateRequest(UserUpdateRequestPojo userUpdateRequest) throws  BadRequestException {
-        if(!dtoValidators.userUpdateRequestPojoIsValid(userUpdateRequest)){
+    public User updateUserByUserUpdateRequest(UserUpdateRequestDto userUpdateRequest) throws  BadRequestException {
+        if(!dtoValidators.userUpdateRequestDtoIsValid(userUpdateRequest))
             throw new BadRequestException(String.format("User with username %s not updated!!!", userUpdateRequest.username()));
-        }
         var user = getUserByUsername(userUpdateRequest.username());
         user.setHeightSm(userUpdateRequest.heightSm());
         user.setWeightKg(userUpdateRequest.weightKg());
@@ -117,6 +100,10 @@ public class UserService implements  UserDetailsService {
         return userRepository.findAllByEnabled(filter);
     }
 
+    /**
+    * @param param  may be (ROLE or ENABLE)
+    * @param value  if ROLE - ADMIN or USER, if ENABLE - true/false
+    */
     public List<User> getUsersByFilter(String param, String value) throws NotFoundException {
         List<User> users = null;
         if(isNotEmpty(param) && isNotEmpty(value)){

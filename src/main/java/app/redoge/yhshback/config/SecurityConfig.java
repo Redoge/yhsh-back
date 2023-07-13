@@ -46,7 +46,6 @@ public class SecurityConfig {
                         .hasAnyAuthority(
                                 UserRole.USER.name(),
                                 UserRole.ADMIN.name())
-
                         .requestMatchers(AUTH_PATH.concat(ALL_PATH))
                         .permitAll()
                 )

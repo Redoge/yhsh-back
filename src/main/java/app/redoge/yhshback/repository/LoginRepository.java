@@ -10,6 +10,5 @@ import java.util.List;
 @Repository
 public interface LoginRepository  extends JpaRepository<Login, Long> {
     List<Login> findAllByUserId(long userId);
-
     List<Login> findAllByUserUsername(String username);
 }

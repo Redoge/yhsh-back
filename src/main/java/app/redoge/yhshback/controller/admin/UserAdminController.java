@@ -1,6 +1,7 @@
 package app.redoge.yhshback.controller.admin;
 
 import app.redoge.yhshback.exception.BadRequestException;
+import app.redoge.yhshback.exception.UserNotFoundException;
 import app.redoge.yhshback.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,18 +16,16 @@ public class UserAdminController {
     private final UserService userService;
 
     @PostMapping("/change/role")
-    public boolean changeUserRoleById(@RequestBody Id id) throws BadRequestException {
+    public boolean changeUserRoleById(@RequestBody Id id) throws BadRequestException, UserNotFoundException {
         userService.changeUserRoleByUserId(id.getId());
         return true;
     }
 
     @PostMapping("/change/enabled")
-    public boolean changeUserEnabledById(@RequestBody Id id) throws BadRequestException {
+    public boolean changeUserEnabledById(@RequestBody Id id) throws BadRequestException, UserNotFoundException {
         userService.changeEnabledByUserId(id.getId());
         return true;
     }
-
-
     @Data
     static class Id {
         private Long id;

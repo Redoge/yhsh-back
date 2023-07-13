@@ -10,20 +10,8 @@ import java.util.Optional;
 
 @Repository
 public interface TrainingRepository  extends JpaRepository<Training, Long> {
-
-    List<Training> findAllByRemoved(boolean removed);
-
-    List<Training> getTrainingByActivityCreatorUsernameAndRemoved(String username, boolean b);
-
-    List<Training> getTrainingByActivityCreatorIdAndRemoved(Long userId, boolean b);
-
-    Optional<Training> findByIdAndRemoved(long id, boolean removed);
-
     List<Training> getTrainingByActivityCreatorIdAndRemovedAndActivityRemoved(Long userId, boolean b, boolean activityRemoved);
-
     List<Training> getTrainingByActivityCreatorUsernameAndRemovedAndActivityRemoved(String username, boolean b, boolean b1);
-
     List<Training> findAllByRemovedAndActivityRemoved(boolean b, boolean b1);
-
     Optional<Training> findByIdAndRemovedAndActivityRemoved(long id, boolean b, boolean b1);
 }

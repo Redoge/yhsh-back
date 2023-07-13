@@ -4,7 +4,7 @@ import app.redoge.yhshback.entity.User;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.exception.UserNotFoundException;
-import app.redoge.yhshback.pojo.UserUpdateRequestPojo;
+import app.redoge.yhshback.dto.UserUpdateRequestDto;
 import app.redoge.yhshback.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User updateUser(@RequestBody UserUpdateRequestPojo userUpdateRequest) throws  BadRequestException {
+    public User updateUser(@RequestBody UserUpdateRequestDto userUpdateRequest) throws  BadRequestException {
         return userService.updateUserByUserUpdateRequest(userUpdateRequest);
     }
 }

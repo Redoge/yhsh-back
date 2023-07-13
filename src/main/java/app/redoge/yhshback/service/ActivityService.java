@@ -2,17 +2,17 @@ package app.redoge.yhshback.service;
 
 
 import app.redoge.yhshback.dto.ActivitySaveRequestDto;
+import app.redoge.yhshback.dto.ActivityUpdateDto;
 import app.redoge.yhshback.entity.Activity;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
+import app.redoge.yhshback.exception.UserNotFoundException;
 import app.redoge.yhshback.repository.ActivityRepository;
-import app.redoge.yhshback.repository.UserRepository;
 import app.redoge.yhshback.utill.validators.DtoValidators;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +25,7 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 @AllArgsConstructor
 public class ActivityService {
     private final ActivityRepository activityRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final DtoValidators dtoValidators;
 
     @Transactional
@@ -35,19 +35,18 @@ public class ActivityService {
     }
 
     @Transactional
-    public void save(Activity activity) {
+    public Activity save(Activity activity) throws BadRequestException {
         if(isNotEmpty(activity.getName())){
-            activityRepository.save(activity);
+            return activityRepository.save(activity);
+        }else{
+            throw new BadRequestException("Activity name can't be empty");
         }
     }
     @PreAuthorize("#activitySaveRequestDto.username().equalsIgnoreCase(authentication.name)")
-    public Activity saveByDto(ActivitySaveRequestDto activitySaveRequestDto) throws BadRequestException {
+    public Activity saveByDto(ActivitySaveRequestDto activitySaveRequestDto) throws BadRequestException, UserNotFoundException {
         if(!dtoValidators.activitySaveRequestDtoIsValid(activitySaveRequestDto))
             throw new BadRequestException("Activity not valid!!!");
-
-        var creator = userRepository.findByUsername(activitySaveRequestDto.username())
-                .orElseThrow(()-> new UsernameNotFoundException(activitySaveRequestDto.username()));
-
+        var creator = userService.findUserByUsername(activitySaveRequestDto.username());
         var activity = Activity.builder()
                 .creator(creator)
                 .removed(false)
@@ -58,8 +57,8 @@ public class ActivityService {
     }
     @Transactional
     @PreAuthorize("@activityService.getById(#activityId).creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
-    public boolean removeById(long activityId) throws NotFoundException {
-        Activity activity = getById(activityId);
+    public boolean removeById(long activityId) throws NotFoundException, BadRequestException {
+        var activity = getById(activityId);
         activity.setRemoved(true);
         save(activity);
         return true;
@@ -76,6 +75,17 @@ public class ActivityService {
     @Transactional
     @PostAuthorize("returnObject.creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public Activity getById(long id) throws NotFoundException {
-        return activityRepository.findByIdAndRemoved(id, false).orElseThrow(()-> new NotFoundException("Activity", id));
+        return activityRepository.findByIdAndRemoved(id, false).
+                orElseThrow(()-> new NotFoundException("Activity", id));
+    }
+    @Transactional
+    @PreAuthorize("@activityService.getById(#id).creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
+    public Activity updateByDto(long id, ActivityUpdateDto activityRequestDto) throws NotFoundException, BadRequestException {
+        var activity = getById(id);
+        if(isNotEmpty(activityRequestDto) && isNotEmpty(activityRequestDto.name())){
+            activity.setName(activityRequestDto.name());
+            return save(activity);
+        }
+        throw new BadRequestException("Activity name can't be empty");
     }
 }

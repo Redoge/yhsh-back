@@ -5,7 +5,6 @@ import app.redoge.yhshback.entity.Activity;
 import app.redoge.yhshback.entity.Training;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
-import app.redoge.yhshback.repository.ActivityRepository;
 import app.redoge.yhshback.repository.TrainingRepository;
 
 import app.redoge.yhshback.utill.validators.DtoValidators;
@@ -24,16 +23,16 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 @Transactional
 public class TrainingService {
     private final TrainingRepository trainingRepository;
-    private final ActivityRepository activityRepository;
+    private final ActivityService activityService;
     private final DtoValidators dtoValidators;
 
-    public TrainingService(TrainingRepository trainingRepository, ActivityRepository activityRepository, DtoValidators dtoValidators) {
+    public TrainingService(TrainingRepository trainingRepository, ActivityService activityService, DtoValidators dtoValidators) {
         this.trainingRepository = trainingRepository;
-        this.activityRepository = activityRepository;
+        this.activityService = activityService;
         this.dtoValidators = dtoValidators;
     }
 
-    public Training save(Training training) throws BadRequestException {
+    public Training save(Training training) throws BadRequestException {//TODO: encapsulate valid
         if (training.getCount() > 0 &&
                 isNotEmpty(training.getActivity()) && isNotEmpty(training.getStartTime())) {
             return trainingRepository.save(training);
@@ -43,13 +42,9 @@ public class TrainingService {
     }
 
 
-    @PostAuthorize("returnObject.activity.creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
-    public Training getById(long trainingId) throws NotFoundException {
-        return trainingRepository.findById(trainingId).orElseThrow(()->new NotFoundException("Training", trainingId));
-    }
-    @PreAuthorize("@trainingService.getById(#trainingId).activity.creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
+    @PreAuthorize("@trainingService.getTrainingById(#trainingId).activity.creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public boolean removeById(long trainingId) throws NotFoundException {
-        Training training = getById(trainingId);
+        var training = getTrainingById(trainingId);
         training.setRemoved(true);
         trainingRepository.save(training);
         return true;
@@ -69,8 +64,7 @@ public class TrainingService {
     public Training saveByDto(TrainingSaveRequestDto trainingDto) throws NotFoundException, BadRequestException {
         if(!dtoValidators.trainingSaveRequestDtoIsValid(trainingDto))
             throw new BadRequestException("Training not saved!!!");
-        var activity = activityRepository.findByIdAndRemoved(trainingDto.activityId(), false)
-                .orElseThrow(() -> new NotFoundException("Activity", trainingDto.activityId()));
+        var activity = activityService.getById(trainingDto.activityId());
         return saveAndAddToActivity(Training.builder()
               .activity(activity)
               .startTime(trainingDto.start())
