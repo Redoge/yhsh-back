@@ -11,4 +11,7 @@ public class NotFoundException extends Exception {
     public NotFoundException(String objName, String name) {
         super(String.format("%s - %s - not found!!!", objName, name));
     }
+    public NotFoundException(String message) {
+        super(message);
+    }
 }

@@ -10,6 +10,7 @@ import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.UserIsExistException;
 import app.redoge.yhshback.repository.UserRepository;
 import app.redoge.yhshback.utill.validators.DtoValidators;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,10 +31,13 @@ public class AuthService {
     private final LoginService loginService;
     private final AuthenticationManager authenticationManager;
     private final DtoValidators dtoValidators;
+    private final UserEmailConfirmationService userEmailConfirmationService;
 
+    @Transactional
     public AuthenticationResponseDto registerUser(RegisterRequestDto request) throws UserIsExistException, BadRequestException {
         return registerByRequestDtoAndRole(request, UserRole.USER);
     }
+    @Transactional
     public AuthenticationResponseDto registerAdmin(RegisterRequestDto request) throws UserIsExistException, BadRequestException {
         return registerByRequestDtoAndRole(request, UserRole.ADMIN);
     }
@@ -65,8 +69,10 @@ public class AuthService {
                 .userRole(userRole)
                 .email(request.email())
                 .enabled(true)
+                .emailConfirmed(false)
                 .build();
         repository.save(user);
+        userEmailConfirmationService.sendEmailConfirmation(user);
         var jwt = jwtService.generateToken(user);
         return new AuthenticationResponseDto(jwt);
     }

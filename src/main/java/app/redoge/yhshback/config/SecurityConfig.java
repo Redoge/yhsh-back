@@ -38,6 +38,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(ADMIN_PATH.concat("**"))
                         .hasAuthority(UserRole.ADMIN.name())
+                        .requestMatchers(ACTIVATION_PATH.concat("/**"))
+                        .permitAll()
                         .requestMatchers(
                                 USERS_PATH.concat(ALL_PATH),
                                 LOGINS_PATH.concat(ALL_PATH),

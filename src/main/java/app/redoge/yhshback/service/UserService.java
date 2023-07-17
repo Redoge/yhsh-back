@@ -36,6 +36,9 @@ public class UserService implements  UserDetailsService {
     public User findUserByUsername(String username) throws UserNotFoundException {
         return userRepository.findByUsername(username).orElseThrow(()->new UserNotFoundException(username));
     }
+    public User getUserByEmail(String email) throws NotFoundException {
+        return userRepository.findByEmail(email).orElseThrow(()->new NotFoundException("Email", email));
+    }
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<User> getAllUsers(){
         return userRepository.findAll();
@@ -119,4 +122,16 @@ public class UserService implements  UserDetailsService {
         }
         return isNotEmpty(users) ? users : getAllUsers();
     }
+
+    public boolean confirmEmail(User user) {
+        user.setEmailConfirmed(true);
+        save(user);
+        return true;
+    }
+
+    private User save(User user){
+        return userRepository.save(user);
+    }
+
+
 }
