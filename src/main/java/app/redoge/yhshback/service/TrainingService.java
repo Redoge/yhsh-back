@@ -3,19 +3,19 @@ package app.redoge.yhshback.service;
 import app.redoge.yhshback.dto.TrainingSaveRequestDto;
 import app.redoge.yhshback.entity.Activity;
 import app.redoge.yhshback.entity.Training;
+import app.redoge.yhshback.entity.enums.TrainingMode;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.repository.TrainingRepository;
-
 import app.redoge.yhshback.utill.validators.DtoValidators;
 import jakarta.transaction.Transactional;
-
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
@@ -66,10 +66,11 @@ public class TrainingService {
             throw new BadRequestException("Training not saved!!!");
         var activity = activityService.getById(trainingDto.activityId());
         return saveAndAddToActivity(Training.builder()
-              .activity(activity)
-              .startTime(trainingDto.start())
-              .endTime(LocalDateTime.now())
-              .count(trainingDto.count())
+                .activity(activity)
+                .startTime(trainingDto.start())
+                .endTime(LocalDateTime.now())
+                .count(trainingDto.count())
+                .mode(TrainingMode.SOLO)
               .build(), activity);
     }
     @PreAuthorize("#username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
