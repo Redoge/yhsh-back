@@ -1,4 +1,4 @@
 package app.redoge.yhshback.dto;
 
-public record ActivityUpdateDto(String name) {
+public record ActivityUpdateDto(Long id, String name, String notation) {
 }
