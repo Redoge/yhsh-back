@@ -27,8 +27,11 @@ public class Workout {
     @JsonIgnoreProperties("workouts")
     private User user;
 
-    @Column(name = "workouts_time")
-    private LocalDateTime time;
+    @Column(name = "workouts_start_time")
+    private LocalDateTime startTime;
+
+    @Column(name = "workouts_end_time")
+    private LocalDateTime endTime;
 
     @Column(name = "workouts_removed")
     private boolean removed;

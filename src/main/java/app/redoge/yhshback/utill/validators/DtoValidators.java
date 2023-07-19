@@ -50,9 +50,9 @@ public class DtoValidators {
                 && isNotEmpty(dto.startTime())
                 && isNotEmpty(dto.endTime());
     }
-    private boolean trainingIntoWorkoutSaveDtoIsValid(TrainingIntoWorkoutSaveDto dto){
+    public boolean trainingIntoWorkoutSaveDtoIsValid(TrainingIntoWorkoutSaveDto dto){
         return dto.activityId() > 0
                 && dto.count() > 0
-                && isNotEmpty(dto.start());
+                && isNotEmpty(dto.startTime());
     }
 }

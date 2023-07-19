@@ -30,18 +30,11 @@ public class Training implements Serializable {
     @JsonIgnoreProperties("trainings")
     private Activity activity;
 
-    @ManyToOne
-    @JsonIgnoreProperties("trainings")
-    private Workout workout;
-
     @Column(name = "training_count")
     private int count;
 
     @Column(name = "training_start_time")
     private LocalDateTime startTime;
-
-    @Column(name = "training_end_time")
-    private LocalDateTime endTime;
 
     @Column(name = "training_is_removed")
     private boolean removed = false;
