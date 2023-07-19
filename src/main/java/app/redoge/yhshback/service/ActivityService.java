@@ -80,12 +80,15 @@ public class ActivityService {
     }
     @Transactional
     @PreAuthorize("@activityService.getById(#id).creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
-    public Activity updateByDto(long id, ActivityUpdateDto activityRequestDto) throws NotFoundException, BadRequestException {
+    public Activity updateByDto(Long id, ActivityUpdateDto activityRequestDto) throws NotFoundException, BadRequestException {
+        if(!id.equals(activityRequestDto.id()))
+            throw new BadRequestException("Activity id not equal path id");
         var activity = getById(id);
-        if(isNotEmpty(activityRequestDto) && isNotEmpty(activityRequestDto.name())){
+        if(dtoValidators.activityUpdateDtoIsValid(activityRequestDto)){
             activity.setName(activityRequestDto.name());
+            activity.setNotation(activityRequestDto.notation());
             return save(activity);
         }
-        throw new BadRequestException("Activity name can't be empty");
+        throw new BadRequestException("Activity name and notation can't be empty");
     }
 }
