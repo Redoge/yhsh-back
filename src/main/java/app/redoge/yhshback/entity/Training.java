@@ -30,6 +30,10 @@ public class Training implements Serializable {
     @JsonIgnoreProperties("trainings")
     private Activity activity;
 
+    @ManyToOne
+    @JsonIgnoreProperties("trainings")
+    private Workout workout;
+
     @Column(name = "training_count")
     private int count;
 
