@@ -69,7 +69,6 @@ public class TrainingService {
         return saveAndAddToActivity(Training.builder()
                 .activity(activity)
                 .startTime(trainingDto.start())
-                .endTime(LocalDateTime.now())
                 .count(trainingDto.count())
                 .mode(TrainingMode.SOLO)
               .build(), activity);
