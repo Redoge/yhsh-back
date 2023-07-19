@@ -3,6 +3,7 @@ package app.redoge.yhshback.service;
 import app.redoge.yhshback.dto.TrainingSaveRequestDto;
 import app.redoge.yhshback.entity.Activity;
 import app.redoge.yhshback.entity.Training;
+import app.redoge.yhshback.entity.User;
 import app.redoge.yhshback.entity.enums.TrainingMode;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
@@ -78,14 +79,26 @@ public class TrainingService {
         return trainingRepository.getTrainingByActivityCreatorUsernameAndRemovedAndActivityRemoved(username, false, false)
                 .stream().sorted(Comparator.comparing(Training::getStartTime).reversed()).toList();
     }
+
     @PreAuthorize("@userService.getUserById(#userId).username == authentication.name or hasAuthority('ADMIN')")
     public List<Training> getAllTrainingByUserId(Long userId) {
         return trainingRepository.getTrainingByActivityCreatorIdAndRemovedAndActivityRemoved(userId, false, false)
                 .stream().sorted(Comparator.comparing(Training::getStartTime).reversed()).toList();
     }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<Training> getAllTraining() {
         return trainingRepository.findAllByRemovedAndActivityRemoved(false, false)
                 .stream().sorted(Comparator.comparing(Training::getStartTime).reversed()).toList();
+    }
+
+    @PreAuthorize("#user.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
+    public void removeAllTrainings(List<Training> trainingList, User user) {
+        if (isNotEmpty(trainingList)) {
+            for (var training : trainingList) {
+                training.setRemoved(true);
+            }
+            trainingRepository.saveAll(trainingList);
+        }
     }
 }
