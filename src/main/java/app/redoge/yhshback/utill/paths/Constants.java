@@ -9,6 +9,7 @@ public class Constants {
     public static final String ACTIVATION_PATH = API_VERSION_PATH + "activate";
     public static final String LOGINS_PATH = API_VERSION_PATH + "logins";
     public static final String AUTH_PATH = API_VERSION_PATH + "auth";
+    public static final String WORKOUT_PATH = API_VERSION_PATH + "workout";
 
     public static final String ADMIN_PATH = API_VERSION_PATH + "admin/";
     public static final String ADMIN_USER_PATH = ADMIN_PATH + "users";

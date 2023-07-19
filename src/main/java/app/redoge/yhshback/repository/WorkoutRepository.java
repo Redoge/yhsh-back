@@ -8,4 +8,8 @@ import java.util.List;
 
 public interface WorkoutRepository extends JpaRepository<Workout, Long> {
     List<Workout> findByUserAndRemoved(User user, boolean b);
+
+    List<Workout> findAllByUserUsernameAndRemovedAndTrainingsRemoved(String username, boolean removed, boolean trRemoved);
+
+    List<Workout> findAllByUserIdAndRemovedAndTrainingsRemoved(Long userId, boolean removed, boolean trRemoved);
 }

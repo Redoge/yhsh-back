@@ -42,15 +42,19 @@ public class WorkoutService {
         return workoutRepository.findByUserAndRemoved(user, false);
     }
     public List<Workout> getAllWorkoutByUsername(String username){
-        var user = userService.getUserByUsername(username);
-        return getAllWorkoutsByUser(user);
+        return workoutRepository.findAllByUserUsernameAndRemovedAndTrainingsRemoved(username, false, false);
     }
 
     @Transactional
-    public void removeById(Long id) throws NotFoundException {
+    public boolean removeById(Long id) throws NotFoundException {
         var workout = getById(id);
         workout.setRemoved(true);
         trainingService.removeAllTrainings(workout.getTrainings(), workout.getUser());
         save(workout);
+        return true;
+    }
+
+    public List<Workout> getAllWorkoutByUserId(Long userId) {
+        return workoutRepository.findAllByUserIdAndRemovedAndTrainingsRemoved(userId, false, false);
     }
 }
