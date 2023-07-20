@@ -3,7 +3,7 @@ package app.redoge.yhshback.config;
 import app.redoge.yhshback.dto.RegisterRequestDto;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.UserIsExistException;
-import app.redoge.yhshback.service.AuthService;
+import app.redoge.yhshback.service.interfaces.IAuthService;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @AllArgsConstructor
 public class AdminConfig {
-    private final AuthService authService;
+    private final IAuthService authService;
     @PostConstruct
     public void addAdminIfNotExist() throws BadRequestException, UserIsExistException {
         boolean adminIsExist = authService.userExistsByUsername("Redoge");

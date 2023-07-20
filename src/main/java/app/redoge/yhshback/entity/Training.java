@@ -1,8 +1,11 @@
 package app.redoge.yhshback.entity;
 
+import app.redoge.yhshback.entity.enums.TrainingMode;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -33,11 +36,10 @@ public class Training implements Serializable {
     @Column(name = "training_start_time")
     private LocalDateTime startTime;
 
-    @Column(name = "training_end_time")
-    private LocalDateTime endTime;
-
-
     @Column(name = "training_is_removed")
     private boolean removed = false;
 
+    @Column(name = "training_mode")
+    @Enumerated(EnumType.STRING)
+    private TrainingMode mode;
 }

@@ -1,6 +1,6 @@
 package app.redoge.yhshback.config;
 
-import app.redoge.yhshback.service.JwtService;
+import app.redoge.yhshback.service.interfaces.IJwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ import static java.util.Objects.isNull;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
-    private final JwtService jwtService;
+    private final IJwtService jwtService;
     private final UserDetailsService userDetailsService;
     @Override
     protected void doFilterInternal(

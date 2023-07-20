@@ -8,6 +8,8 @@ import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.exception.UserNotFoundException;
 import app.redoge.yhshback.repository.ActivityRepository;
+import app.redoge.yhshback.service.interfaces.IActivityService;
+import app.redoge.yhshback.service.interfaces.IUserService;
 import app.redoge.yhshback.utill.validators.DtoValidators;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -23,18 +25,20 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 @Service
 @Transactional
 @AllArgsConstructor
-public class ActivityService {
+public class ActivityService implements IActivityService {
     private final ActivityRepository activityRepository;
-    private final UserService userService;
+    private final IUserService userService;
     private final DtoValidators dtoValidators;
 
     @Transactional
     @PreAuthorize("hasAuthority('ADMIN')")
+    @Override
     public List<Activity> getAll(){
         return activityRepository.findAllByRemoved(false);
     }
 
     @Transactional
+    @Override
     public Activity save(Activity activity) throws BadRequestException {
         if(isNotEmpty(activity.getName())){
             return activityRepository.save(activity);
@@ -43,6 +47,7 @@ public class ActivityService {
         }
     }
     @PreAuthorize("#activitySaveRequestDto.username().equalsIgnoreCase(authentication.name)")
+    @Override
     public Activity saveByDto(ActivitySaveRequestDto activitySaveRequestDto) throws BadRequestException, UserNotFoundException {
         if(!dtoValidators.activitySaveRequestDtoIsValid(activitySaveRequestDto))
             throw new BadRequestException("Activity not valid!!!");
@@ -57,6 +62,7 @@ public class ActivityService {
     }
     @Transactional
     @PreAuthorize("@activityService.getById(#activityId).creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
+    @Override
     public boolean removeById(long activityId) throws NotFoundException, BadRequestException {
         var activity = getById(activityId);
         activity.setRemoved(true);
@@ -64,22 +70,26 @@ public class ActivityService {
         return true;
     }
     @PreAuthorize("#username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
+    @Override
     public List<Activity> getAllByCreatorUsername(String username) {
         return activityRepository.findByCreatorUsernameAndRemoved(username, false);
     }
 
     @PreAuthorize("@userService.getUserById(#userId).username == authentication.name or hasAuthority('ADMIN')")
+    @Override
     public List<Activity> getAllByCreatorId(Long userId) {
         return activityRepository.findByCreatorIdAndRemoved(userId, false);
     }
     @Transactional
     @PostAuthorize("returnObject.creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
+    @Override
     public Activity getById(long id) throws NotFoundException {
         return activityRepository.findByIdAndRemoved(id, false).
                 orElseThrow(()-> new NotFoundException("Activity", id));
     }
     @Transactional
     @PreAuthorize("@activityService.getById(#id).creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
+    @Override
     public Activity updateByDto(Long id, ActivityUpdateDto activityRequestDto) throws NotFoundException, BadRequestException {
         if(!id.equals(activityRequestDto.id()))
             throw new BadRequestException("Activity id not equal path id");

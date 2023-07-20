@@ -3,8 +3,8 @@ package app.redoge.yhshback.controller;
 import app.redoge.yhshback.entity.User;
 import app.redoge.yhshback.exception.UserNotFoundException;
 import app.redoge.yhshback.dto.UserActivityStatsDto;
-import app.redoge.yhshback.service.StatsService;
-import app.redoge.yhshback.service.UserService;
+import app.redoge.yhshback.service.interfaces.IStatsService;
+import app.redoge.yhshback.service.interfaces.IUserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,8 +20,8 @@ import static org.apache.commons.lang3.math.NumberUtils.isCreatable;
 @RequestMapping(USERS_PATH)
 @AllArgsConstructor
 public class StatsController {
-    private final UserService userService;
-    private final StatsService statsService;
+    private final IUserService userService;
+    private final IStatsService statsService;
     @GetMapping("/{usernameOrId}/stats")
     public List<UserActivityStatsDto> getStats(@PathVariable String usernameOrId) throws UserNotFoundException {
         User user;

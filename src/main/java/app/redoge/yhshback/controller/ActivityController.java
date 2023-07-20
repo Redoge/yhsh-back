@@ -6,7 +6,7 @@ import app.redoge.yhshback.entity.Activity;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.exception.UserNotFoundException;
-import app.redoge.yhshback.service.ActivityService;
+import app.redoge.yhshback.service.interfaces.IActivityService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +18,7 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 @RequestMapping(ACTIVITIES_PATH)
 @AllArgsConstructor
 public class ActivityController {
-    private final ActivityService activityService;
+    private final IActivityService activityService;
 
     @GetMapping
     public List<Activity> getAll(@RequestParam(value = "creatorId", required = false) Long userId,

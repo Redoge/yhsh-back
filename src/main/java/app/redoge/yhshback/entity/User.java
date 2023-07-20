@@ -55,6 +55,10 @@ public class User implements UserDetails {
     @JsonIgnoreProperties("creator")
     private List<Activity> activities;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("user")
+    private List<Workout> workouts;
+
     @Column(name = "user_enabled")
     private boolean enabled = true;
 

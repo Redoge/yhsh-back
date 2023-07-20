@@ -5,7 +5,7 @@ import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.exception.UserNotFoundException;
 import app.redoge.yhshback.dto.UserUpdateRequestDto;
-import app.redoge.yhshback.service.UserService;
+import app.redoge.yhshback.service.interfaces.IUserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +18,7 @@ import static org.apache.commons.lang3.math.NumberUtils.isCreatable;
 @RequestMapping(USERS_PATH)
 @AllArgsConstructor
 public class UserController {
-    private final UserService userService;
+    private final IUserService userService;
 
     @GetMapping
     public List<User> getUsers(@RequestParam(value = "filterParam", required = false) String param,
