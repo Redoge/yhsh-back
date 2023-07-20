@@ -9,6 +9,10 @@ import app.redoge.yhshback.entity.enums.UserRole;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.UserIsExistException;
 import app.redoge.yhshback.repository.UserRepository;
+import app.redoge.yhshback.service.interfaces.IAuthService;
+import app.redoge.yhshback.service.interfaces.IJwtService;
+import app.redoge.yhshback.service.interfaces.ILoginService;
+import app.redoge.yhshback.service.interfaces.IUserEmailConfirmationService;
 import app.redoge.yhshback.utill.validators.DtoValidators;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -24,23 +28,26 @@ import static java.lang.String.format;
 
 @Service
 @AllArgsConstructor
-public class AuthService {
+public class AuthService implements IAuthService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
-    private final LoginService loginService;
+    private final IJwtService jwtService;
+    private final ILoginService loginService;
     private final AuthenticationManager authenticationManager;
     private final DtoValidators dtoValidators;
-    private final UserEmailConfirmationService userEmailConfirmationService;
+    private final IUserEmailConfirmationService userEmailConfirmationService;
 
     @Transactional
+    @Override
     public AuthenticationResponseDto registerUser(RegisterRequestDto request) throws UserIsExistException, BadRequestException {
         return registerByRequestDtoAndRole(request, UserRole.USER);
     }
     @Transactional
+    @Override
     public AuthenticationResponseDto registerAdmin(RegisterRequestDto request) throws UserIsExistException, BadRequestException {
         return registerByRequestDtoAndRole(request, UserRole.ADMIN);
     }
+    @Override
     public AuthenticationResponseDto auth(AuthenticationRequestDto request) throws BadRequestException {
         if(!dtoValidators.authenticationRequestDtoIsValid(request))
             throw new BadRequestException("Invalid credentials!!!");
@@ -53,10 +60,10 @@ public class AuthService {
         var jwt = jwtService.generateToken(user);
         return new AuthenticationResponseDto(jwt);
     }
+    @Override
     public boolean userExistsByUsername(String username) {
         return repository.existsByUsername(username);
     }
-
     private AuthenticationResponseDto registerByRequestDtoAndRole(RegisterRequestDto request, UserRole userRole) throws UserIsExistException, BadRequestException {
         if(!dtoValidators.registerRequestDtoIsValid(request))
             throw new BadRequestException("Bad request!!!");

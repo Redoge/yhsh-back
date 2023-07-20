@@ -4,7 +4,7 @@ import app.redoge.yhshback.dto.TrainingSaveRequestDto;
 import app.redoge.yhshback.entity.Training;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
-import app.redoge.yhshback.service.TrainingService;
+import app.redoge.yhshback.service.interfaces.ITrainingService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +18,7 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 @AllArgsConstructor
 @RequestMapping(TRAININGS_PATH)
 public class TrainingController {
-    private final TrainingService trainingService;
+    private final ITrainingService trainingService;
 
     @GetMapping
     public List<Training> getAllTrainings(@RequestParam(value = "userId", required = false) Long userId,

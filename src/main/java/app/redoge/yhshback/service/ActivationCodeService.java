@@ -5,6 +5,7 @@ import app.redoge.yhshback.entity.User;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.repository.ActivationCodeRepository;
+import app.redoge.yhshback.service.interfaces.IActivationCodeService;
 import app.redoge.yhshback.utill.StringTokenGenerator;
 import app.redoge.yhshback.utill.validators.ActivationCodeValidator;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 @Service
 @AllArgsConstructor
-public class ActivationCodeService {
+public class ActivationCodeService implements IActivationCodeService {
     private final ActivationCodeRepository repository;
     private final StringTokenGenerator tokenGenerator;
     private final ActivationCodeValidator activationCodeValidator;

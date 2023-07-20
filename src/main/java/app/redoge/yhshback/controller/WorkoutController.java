@@ -4,7 +4,7 @@ import app.redoge.yhshback.dto.WorkoutSaveDto;
 import app.redoge.yhshback.entity.Workout;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
-import app.redoge.yhshback.service.WorkoutService;
+import app.redoge.yhshback.service.interfaces.IWorkoutService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +17,7 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 @RequestMapping(WORKOUT_PATH)
 @AllArgsConstructor
 public class WorkoutController {
-    private final WorkoutService workoutService;
+    private final IWorkoutService workoutService;
 
     @GetMapping
     public List<Workout> getAllWorkout(@RequestParam(value = "userId", required = false) Long userId,
@@ -29,7 +29,7 @@ public class WorkoutController {
         return workoutService.getAllWorkouts();
     }
 
-    @GetMapping("{/id}")
+    @GetMapping("/{id}")
     public Workout getWorkoutById(@PathVariable long id) throws NotFoundException {
         return workoutService.getById(id);
     }
@@ -39,7 +39,7 @@ public class WorkoutController {
         return workoutService.saveByDto(workoutSaveDto);
     }
 
-    @DeleteMapping("{/id}")
+    @DeleteMapping("/{id}")
     public boolean removeById(@PathVariable long id) throws NotFoundException {
         return workoutService.removeById(id);
     }

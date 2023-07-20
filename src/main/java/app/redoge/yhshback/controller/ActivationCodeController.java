@@ -2,7 +2,7 @@ package app.redoge.yhshback.controller;
 
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
-import app.redoge.yhshback.service.UserEmailConfirmationService;
+import app.redoge.yhshback.service.interfaces.IUserEmailConfirmationService;
 import lombok.AllArgsConstructor;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +17,7 @@ import static app.redoge.yhshback.utill.paths.Constants.ACTIVATION_PATH;
 @RequestMapping(ACTIVATION_PATH)
 @AllArgsConstructor
 public class ActivationCodeController {
-    private final UserEmailConfirmationService userEmailConfirmationService;
+    private final IUserEmailConfirmationService userEmailConfirmationService;
     @GetMapping
     public String activateUser(@RequestParam(value = "token") String token) throws NotFoundException, BadRequestException {
         userEmailConfirmationService.confirmedUserByCode(token);

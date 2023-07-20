@@ -1,5 +1,6 @@
 package app.redoge.yhshback.service;
 
+import app.redoge.yhshback.service.interfaces.IJwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,20 +18,26 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JwtService {
+public class JwtService implements IJwtService {
 
     @Value("${jwt.secret}")
     private String secretKey;
+
+    @Override
     public String extractUsername(String jwt) {
         return extractClaim(jwt, Claims::getSubject);
     }
-    public <T> T extractClaim(String jwt, Function<Claims, T> claimsResolver){
+    @Override
+    public <T> T extractClaim(String jwt, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(jwt);
         return claimsResolver.apply(claims);
     }
+    @Override
     public String generateToken(UserDetails userDetails){
         return generateToken(new HashMap<>(), userDetails);
     }
+
+    @Override
     public String generateToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails
@@ -46,11 +53,11 @@ public class JwtService {
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
+    @Override
     public boolean isTokenValid(String jwt, UserDetails user) {
         final String username = extractUsername(jwt);
         return (username.equals(user.getUsername())) && !isTokenExpired(jwt);
     }
-
     private boolean isTokenExpired(String jwt) {
         return extractExpiration(jwt).before(new Date());
     }

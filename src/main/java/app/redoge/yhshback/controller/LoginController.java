@@ -2,7 +2,7 @@ package app.redoge.yhshback.controller;
 
 import app.redoge.yhshback.entity.Login;
 import app.redoge.yhshback.exception.NotFoundException;
-import app.redoge.yhshback.service.LoginService;
+import app.redoge.yhshback.service.interfaces.ILoginService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +15,7 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 @RequestMapping(LOGINS_PATH)
 @AllArgsConstructor
 public class LoginController {
-    private final LoginService loginService;
+    private final ILoginService loginService;
 
     @GetMapping
     public List<Login> getAll(@RequestParam(value = "userId", required = false) Long userId,

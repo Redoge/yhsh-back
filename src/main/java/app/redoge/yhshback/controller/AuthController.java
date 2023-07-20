@@ -5,7 +5,7 @@ import app.redoge.yhshback.dto.AuthenticationResponseDto;
 import app.redoge.yhshback.dto.RegisterRequestDto;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.UserIsExistException;
-import app.redoge.yhshback.service.AuthService;
+import app.redoge.yhshback.service.interfaces.IAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ import static app.redoge.yhshback.utill.paths.Constants.AUTH_PATH;
 @RequestMapping(AUTH_PATH)
 @RequiredArgsConstructor
 public class AuthController {
-    private final AuthService authService;
+    private final IAuthService authService;
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponseDto> register(@RequestBody RegisterRequestDto request) throws UserIsExistException, BadRequestException {
         return ResponseEntity.ok(authService.registerUser(request));
