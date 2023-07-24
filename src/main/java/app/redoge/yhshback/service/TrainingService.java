@@ -1,7 +1,6 @@
 package app.redoge.yhshback.service;
 
 import app.redoge.yhshback.dto.TrainingSaveRequestDto;
-import app.redoge.yhshback.entity.Activity;
 import app.redoge.yhshback.entity.Training;
 import app.redoge.yhshback.entity.User;
 import app.redoge.yhshback.entity.enums.TrainingMode;
@@ -32,8 +31,7 @@ public class TrainingService implements ITrainingService {
 
     @Override
     public Training save(Training training) throws BadRequestException {//TODO: encapsulate valid
-        if (training.getCount() > 0 &&
-                isNotEmpty(training.getActivity()) && isNotEmpty(training.getStartTime())) {
+        if (training.getCount() > 0 && isNotEmpty(training.getActivity()) && isNotEmpty(training.getStartTime())) {
             return trainingRepository.save(training);
         } else {
             throw new BadRequestException("Training not saved!!!");

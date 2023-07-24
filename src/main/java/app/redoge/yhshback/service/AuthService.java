@@ -11,7 +11,6 @@ import app.redoge.yhshback.exception.UserIsExistException;
 import app.redoge.yhshback.repository.UserRepository;
 import app.redoge.yhshback.service.interfaces.IAuthService;
 import app.redoge.yhshback.service.interfaces.IJwtService;
-import app.redoge.yhshback.service.interfaces.ILoginService;
 import app.redoge.yhshback.service.interfaces.IUserEmailConfirmationService;
 import app.redoge.yhshback.utill.validators.DtoValidators;
 import jakarta.transaction.Transactional;
@@ -32,7 +31,6 @@ public class AuthService implements IAuthService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final IJwtService jwtService;
-    private final ILoginService loginService;
     private final AuthenticationManager authenticationManager;
     private final DtoValidators dtoValidators;
     private final IUserEmailConfirmationService userEmailConfirmationService;

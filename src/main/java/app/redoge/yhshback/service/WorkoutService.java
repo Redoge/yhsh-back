@@ -51,18 +51,12 @@ public class WorkoutService implements IWorkoutService {
     @Override
     public List<Workout> getAllWorkoutsByUser(User user){
         var workouts = workoutRepository.findByUserAndRemoved(user, false);
-        for(var workout : workouts){
-            workout.setTrainings(trainingFilter.filterNotRemovedTraining(workout.getTrainings()));
-        }
-        return workouts;
+        return trainingFilter.filterWorkoutListNotRemovedTraining(workouts);
     }
     @Override
     public List<Workout> getAllWorkoutByUsername(String username){
         var workouts =  workoutRepository.findAllByUserUsernameAndRemoved(username, false);
-        for(var workout : workouts){
-            workout.setTrainings(trainingFilter.filterNotRemovedTraining(workout.getTrainings()));
-        }
-        return workouts;
+        return trainingFilter.filterWorkoutListNotRemovedTraining(workouts);
     }
 
     @Transactional
@@ -77,9 +71,6 @@ public class WorkoutService implements IWorkoutService {
     @Override
     public List<Workout> getAllWorkoutByUserId(Long userId) {
         var workouts = workoutRepository.findAllByUserIdAndRemoved(userId, false);
-        for(var workout : workouts){
-            workout.setTrainings(trainingFilter.filterNotRemovedTraining(workout.getTrainings()));
-        }
-        return workouts;
+        return trainingFilter.filterWorkoutListNotRemovedTraining(workouts);
     }
 }
