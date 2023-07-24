@@ -1,0 +1,13 @@
+spring:
+  security:
+    user:
+      password: admin
+      name: admin
+  datasource:
+    url: jdbc:mysql://localhost:3306/yhshback
+    username: redoge
+    password: redoge1670
+api:
+  version: 1
+jwt:
+  secret: dtxkhjhvlgkibjtisnmgfdblbgugzorwhgwaiszmpxcbreewohqimfczfmbxfaoxccrfrvtnrviylbsqllmcrfvbhmfusxbjbeppahlhidyntgxutdtrexyhslayfcqdzewuqdznwmvutizuxwgiucdzhffkbjninlkbbchcnpbecbbcdavupjxqmaldxlmerqohmyqzhveftrcrygifcrahmwvaticryhtrccpikyvjktckyqfrthgsgahrcawwqsfqxsqxcbpnwwdfvxxwmvzwgmhrjyyxjvbfsxlexxejtcspunxhochztulcsdokqdowabhppaoydajfxlaoskzfsxxvcrncjswnyzxaocchkequjnjthjogocfsnpiubfysrlpvguconmppiguyvmlehidnzslhbeopdanxkamncjincmuwvqsteyjkailwmwwdxdkeamlzjhqjcniqewauxnjplckmknrjghavhydjlfogirqgwimcezyocbxs
