@@ -38,6 +38,7 @@ public class DtoMappers {
                 .user(user)
                 .trainings(trainings)
                 .removed(false)
+                .name(dto.name())
                 .build();
     }
     public Training mapTrainingIntoWorkoutSaveDtoToTraining(TrainingIntoWorkoutSaveDto dto) throws NotFoundException, BadRequestException {

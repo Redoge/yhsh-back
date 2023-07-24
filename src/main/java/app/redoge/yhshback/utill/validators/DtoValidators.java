@@ -48,7 +48,8 @@ public class DtoValidators {
                 && dto.trainings().stream().allMatch(this::trainingIntoWorkoutSaveDtoIsValid)
                 && isNotEmpty(dto.username())
                 && isNotEmpty(dto.startTime())
-                && isNotEmpty(dto.endTime());
+                && isNotEmpty(dto.endTime())
+                && isNotEmpty(dto.name());
     }
     public boolean trainingIntoWorkoutSaveDtoIsValid(TrainingIntoWorkoutSaveDto dto){
         return dto.activityId() > 0

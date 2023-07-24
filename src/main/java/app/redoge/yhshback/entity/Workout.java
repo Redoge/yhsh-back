@@ -30,6 +30,9 @@ public class Workout {
     @Column(name = "workouts_start_time")
     private LocalDateTime startTime;
 
+    @Column(name = "workouts_name")
+    private String name;
+
     @Column(name = "workouts_end_time")
     private LocalDateTime endTime;
 
