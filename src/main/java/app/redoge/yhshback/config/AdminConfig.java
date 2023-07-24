@@ -5,18 +5,29 @@ import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.UserIsExistException;
 import app.redoge.yhshback.service.interfaces.IAuthService;
 import jakarta.annotation.PostConstruct;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AdminConfig {
     private final IAuthService authService;
+
+    @Value("${yhsh.admin.username}")
+    private String adminUsername;
+
+    @Value("${yhsh.admin.password}")
+    private String adminPassword;
+
+    @Value("${yhsh.admin.email}")
+    private String adminEmail;
+
     @PostConstruct
     public void addAdminIfNotExist() throws BadRequestException, UserIsExistException {
-        boolean adminIsExist = authService.userExistsByUsername("Redoge");
+        boolean adminIsExist = authService.userExistsByUsername(adminUsername);
         if(!adminIsExist){
-            var registerDto = new RegisterRequestDto("Redoge", "mail.redoge@gmail.com", "redoge1670");
+            var registerDto = new RegisterRequestDto(adminUsername, adminEmail, adminPassword);
             authService.registerAdmin(registerDto);
         }
     }
