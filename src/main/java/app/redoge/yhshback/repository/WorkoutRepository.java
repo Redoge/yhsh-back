@@ -5,11 +5,14 @@ import app.redoge.yhshback.entity.Workout;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WorkoutRepository extends JpaRepository<Workout, Long> {
     List<Workout> findByUserAndRemoved(User user, boolean b);
 
-    List<Workout> findAllByUserUsernameAndRemovedAndTrainingsRemoved(String username, boolean removed, boolean trRemoved);
+    List<Workout> findAllByUserIdAndRemoved(Long userId, boolean removed);
 
-    List<Workout> findAllByUserIdAndRemovedAndTrainingsRemoved(Long userId, boolean removed, boolean trRemoved);
+    Optional<Workout> findByIdAndRemoved(Long id, boolean removed);
+
+    List<Workout> findAllByUserUsernameAndRemoved(String username, boolean b);
 }

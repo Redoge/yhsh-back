@@ -49,10 +49,10 @@ public class TrainingService implements ITrainingService {
         trainingRepository.save(training);
         return true;
     }
-    @PreAuthorize("#activity.creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
+    @PreAuthorize("#training.activity.creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     @Override
-    public Training saveAndAddToActivity(Training training, Activity activity) throws BadRequestException {
-        activity.addTraining(training);
+    public Training saveAndAddToActivity(Training training) throws BadRequestException {
+        training.getActivity().addTraining(training);
         return save(training);
     }
     @PostAuthorize("returnObject.activity.creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
@@ -73,7 +73,7 @@ public class TrainingService implements ITrainingService {
                 .startTime(trainingDto.start())
                 .count(trainingDto.count())
                 .mode(TrainingMode.SOLO)
-              .build(), activity);
+              .build());
     }
     @PreAuthorize("#username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     @Override

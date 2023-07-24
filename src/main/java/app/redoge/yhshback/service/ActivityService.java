@@ -10,6 +10,7 @@ import app.redoge.yhshback.exception.UserNotFoundException;
 import app.redoge.yhshback.repository.ActivityRepository;
 import app.redoge.yhshback.service.interfaces.IActivityService;
 import app.redoge.yhshback.service.interfaces.IUserService;
+import app.redoge.yhshback.utill.filter.TrainingFilter;
 import app.redoge.yhshback.utill.validators.DtoValidators;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
@@ -29,6 +31,7 @@ public class ActivityService implements IActivityService {
     private final ActivityRepository activityRepository;
     private final IUserService userService;
     private final DtoValidators dtoValidators;
+    private final TrainingFilter trainingFilter;
 
     @Transactional
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -84,8 +87,11 @@ public class ActivityService implements IActivityService {
     @PostAuthorize("returnObject.creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     @Override
     public Activity getById(long id) throws NotFoundException {
-        return activityRepository.findByIdAndRemoved(id, false).
+        var activity =  activityRepository.findByIdAndRemoved(id, false).
                 orElseThrow(()-> new NotFoundException("Activity", id));
+        var training = trainingFilter.filterNotRemovedTraining(activity.getTrainings());
+        activity.setTrainings(training);
+        return activity;
     }
     @Transactional
     @PreAuthorize("@activityService.getById(#id).creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")

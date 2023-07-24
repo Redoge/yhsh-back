@@ -8,6 +8,7 @@ import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.repository.WorkoutRepository;
 import app.redoge.yhshback.service.interfaces.ITrainingService;
 import app.redoge.yhshback.service.interfaces.IWorkoutService;
+import app.redoge.yhshback.utill.filter.TrainingFilter;
 import app.redoge.yhshback.utill.mappers.DtoMappers;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -22,14 +23,18 @@ public class WorkoutService implements IWorkoutService {
     private final WorkoutRepository workoutRepository;
     private final ITrainingService trainingService;
     private final DtoMappers dtoMappers;
+    private final TrainingFilter trainingFilter;
     @Override
     public List<Workout> getAllWorkouts(){
         return workoutRepository.findAll();
     }
     @Override
     public Workout getById(Long id) throws NotFoundException {
-        return workoutRepository.findById(id)
+        var workout = workoutRepository.findByIdAndRemoved(id, false)
                 .orElseThrow(() -> new NotFoundException("Workout", id));
+        var trainings = trainingFilter.filterNotRemovedTraining(workout.getTrainings());
+        workout.setTrainings(new ArrayList<>(trainings));
+        return workout;
     }
     @Override
     public Workout save(Workout workout){
@@ -45,11 +50,19 @@ public class WorkoutService implements IWorkoutService {
     }
     @Override
     public List<Workout> getAllWorkoutsByUser(User user){
-        return workoutRepository.findByUserAndRemoved(user, false);
+        var workouts = workoutRepository.findByUserAndRemoved(user, false);
+        for(var workout : workouts){
+            workout.setTrainings(trainingFilter.filterNotRemovedTraining(workout.getTrainings()));
+        }
+        return workouts;
     }
     @Override
     public List<Workout> getAllWorkoutByUsername(String username){
-        return workoutRepository.findAllByUserUsernameAndRemovedAndTrainingsRemoved(username, false, false);
+        var workouts =  workoutRepository.findAllByUserUsernameAndRemoved(username, false);
+        for(var workout : workouts){
+            workout.setTrainings(trainingFilter.filterNotRemovedTraining(workout.getTrainings()));
+        }
+        return workouts;
     }
 
     @Transactional
@@ -63,6 +76,10 @@ public class WorkoutService implements IWorkoutService {
     }
     @Override
     public List<Workout> getAllWorkoutByUserId(Long userId) {
-        return workoutRepository.findAllByUserIdAndRemovedAndTrainingsRemoved(userId, false, false);
+        var workouts = workoutRepository.findAllByUserIdAndRemoved(userId, false);
+        for(var workout : workouts){
+            workout.setTrainings(trainingFilter.filterNotRemovedTraining(workout.getTrainings()));
+        }
+        return workouts;
     }
 }
