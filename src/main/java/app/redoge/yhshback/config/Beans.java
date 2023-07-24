@@ -1,6 +1,7 @@
 package app.redoge.yhshback.config;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.MailSender;
@@ -18,7 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Properties;
 
 @Configuration
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Beans {
 
     private final UserDetailsService userDetailsService;
@@ -44,13 +45,21 @@ public class Beans {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
+    @Value("${yhsh.mail.host}")
+    private String mailHost;
+    @Value("${yhsh.mail.port}")
+    private int mailPort;
+    @Value("${yhsh.mail.username}")
+    private String mailUsername;
+    @Value("${yhsh.mail.password}")
+    private String mailPassword;
     @Bean
     public MailSender mailSender() {
         var mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.email.eu-frankfurt-1.oci.oraclecloud.com");
-        mailSender.setPort(587);
-        mailSender.setUsername("ocid1.user.oc1..aaaaaaaahsmbyqefruzdnxslp3objgjygtycbalnphzb6sj57fmihh2qheva@ocid1.tenancy.oc1..aaaaaaaae3234swttg7duu5cwqde6llxsqfashuhlh43uzfahci3wfx455ia.v2.com");
-        mailSender.setPassword(">3.6Eb.Niba9L8Xx>H0p");
+        mailSender.setHost(mailHost);
+        mailSender.setPort(mailPort);
+        mailSender.setUsername(mailUsername);
+        mailSender.setPassword(mailPassword);
         mailSender.setJavaMailProperties(new Properties());
         mailSender.getJavaMailProperties().put("mail.smtp.auth", "true");
         mailSender.getJavaMailProperties().put("mail.smtp.starttls.enable", "true");
