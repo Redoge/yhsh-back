@@ -1,0 +1,13 @@
+spring:
+  security:
+    user:
+      password: admin
+      name: admin
+  datasource:
+    url: jdbc:mysql://130.162.63.40:3306/yhsh_test
+    username: test
+    password: Test_1670
+api:
+  version: 1
+jwt:
+  secret: dtxkhjhvlgkibjtisnmgfdblbgugzorwhgwaiszmpxcbreewohqimfczfmbxfaoxccrfrvtnrviylbsqllmcrfvbhmfusxbjbeppahlhidyntgxutdtrexyhslayfcqdzewuqdznwmvutizuxwgiucdzhffkbjninlkbbchcnpbecbbcdavupjxqmaldxlmerqohmyqzhveftrcrygifcrahmwvaticryhtrccpikyvjktckyqfrthgsgahrcawwqsfqxsqxcbpnwwdfvxxwmvzwgmhrjyyxjvbfsxlexxejtcspunxhochztulcsdokqdowabhppaoydajfxlaoskzfsxxvcrncjswnyzxaocchkequjnjthjogocfsnpiubfysrlpvguconmppiguyvmlehidnzslhbeopdanxkamncjincmuwvqsteyjkailwmwwdxdkeamlzjhqjcniqewauxnjplckmknrjghavhydjlfogirqgwimcezyocbxs
