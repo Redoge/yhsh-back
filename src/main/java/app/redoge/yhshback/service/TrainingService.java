@@ -106,4 +106,16 @@ public class TrainingService implements ITrainingService {
             trainingRepository.saveAll(trainingList);
         }
     }
+
+    @Override
+    public List<Training> addAllToActivity(List<Training> trainings) {
+        for(var training: trainings){
+            training.getActivity().addTraining(training);
+        }
+        return trainings;
+    }
+    @Override
+    public List<Training> saveAll(List<Training> trainings) {
+        return trainingRepository.saveAll(trainings);
+    }
 }

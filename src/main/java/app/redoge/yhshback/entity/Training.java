@@ -4,9 +4,6 @@ import app.redoge.yhshback.entity.enums.TrainingMode;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -27,7 +24,7 @@ public class Training implements Serializable {
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnoreProperties("trainings")
+    @JsonIgnoreProperties({"trainings", "creator"})
     private Activity activity;
 
     @Column(name = "training_count")

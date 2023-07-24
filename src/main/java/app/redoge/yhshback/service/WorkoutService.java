@@ -7,20 +7,19 @@ import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.repository.WorkoutRepository;
 import app.redoge.yhshback.service.interfaces.ITrainingService;
-import app.redoge.yhshback.service.interfaces.IUserService;
 import app.redoge.yhshback.service.interfaces.IWorkoutService;
 import app.redoge.yhshback.utill.mappers.DtoMappers;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class WorkoutService implements IWorkoutService {
     private final WorkoutRepository workoutRepository;
-    private final IUserService userService;
     private final ITrainingService trainingService;
     private final DtoMappers dtoMappers;
     @Override
@@ -39,6 +38,9 @@ public class WorkoutService implements IWorkoutService {
     @Override
     public Workout saveByDto(WorkoutSaveDto dto) throws BadRequestException, NotFoundException {
         var workout = dtoMappers.mapWorkoutSaveDtoToWorkout(dto);
+        var trainings = trainingService.saveAll(workout.getTrainings());
+        trainingService.addAllToActivity(new ArrayList<>(trainings));
+        workout.setTrainings(trainings);
         return save(workout);
     }
     @Override

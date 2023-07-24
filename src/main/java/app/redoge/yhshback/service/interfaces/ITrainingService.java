@@ -1,9 +1,11 @@
 package app.redoge.yhshback.service.interfaces;
 
+import app.redoge.yhshback.dto.TrainingIntoWorkoutSaveDto;
 import app.redoge.yhshback.dto.TrainingSaveRequestDto;
 import app.redoge.yhshback.entity.Activity;
 import app.redoge.yhshback.entity.Training;
 import app.redoge.yhshback.entity.User;
+import app.redoge.yhshback.entity.Workout;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
 
@@ -25,4 +27,8 @@ public interface ITrainingService {
     List<Training> getAllTraining();
 
     void removeAllTrainings(List<Training> trainingList, User user);
+
+    List<Training> addAllToActivity(List<Training> trainings);
+    List<Training> saveAll(List<Training> trainings);
+
 }
