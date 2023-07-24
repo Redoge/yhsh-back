@@ -13,6 +13,7 @@ import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 @Entity(name = "activities")
 @Data
+@EqualsAndHashCode(exclude = "trainings")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

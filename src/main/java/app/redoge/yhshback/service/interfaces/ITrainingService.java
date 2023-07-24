@@ -14,7 +14,7 @@ public interface ITrainingService {
     Training save(Training training) throws BadRequestException;
 
     boolean removeById(long trainingId) throws NotFoundException;
-    Training saveAndAddToActivity(Training training, Activity activity) throws BadRequestException;
+    Training saveAndAddToActivity(Training training) throws BadRequestException;
     Training getTrainingById(long id) throws NotFoundException;
 
     Training saveByDto(TrainingSaveRequestDto trainingDto) throws NotFoundException, BadRequestException;
@@ -25,4 +25,8 @@ public interface ITrainingService {
     List<Training> getAllTraining();
 
     void removeAllTrainings(List<Training> trainingList, User user);
+
+    List<Training> addAllToActivity(List<Training> trainings);
+    List<Training> saveAll(List<Training> trainings);
+
 }

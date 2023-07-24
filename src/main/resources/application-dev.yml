@@ -11,3 +11,13 @@ api:
   version: 1
 jwt:
   secret: dtxkhjhvlgkibjtisnmgfdblbgugzorwhgwaiszmpxcbreewohqimfczfmbxfaoxccrfrvtnrviylbsqllmcrfvbhmfusxbjbeppahlhidyntgxutdtrexyhslayfcqdzewuqdznwmvutizuxwgiucdzhffkbjninlkbbchcnpbecbbcdavupjxqmaldxlmerqohmyqzhveftrcrygifcrahmwvaticryhtrccpikyvjktckyqfrthgsgahrcawwqsfqxsqxcbpnwwdfvxxwmvzwgmhrjyyxjvbfsxlexxejtcspunxhochztulcsdokqdowabhppaoydajfxlaoskzfsxxvcrncjswnyzxaocchkequjnjthjogocfsnpiubfysrlpvguconmppiguyvmlehidnzslhbeopdanxkamncjincmuwvqsteyjkailwmwwdxdkeamlzjhqjcniqewauxnjplckmknrjghavhydjlfogirqgwimcezyocbxs
+yhsh:
+  admin:
+    username: Redoge
+    password: redoge1670
+    email: mail.redoge@gmail.com
+  mail:
+    host: smtp.email.eu-frankfurt-1.oci.oraclecloud.com
+    port: 587
+    username: ocid1.user.oc1..aaaaaaaahsmbyqefruzdnxslp3objgjygtycbalnphzb6sj57fmihh2qheva@ocid1.tenancy.oc1..aaaaaaaae3234swttg7duu5cwqde6llxsqfashuhlh43uzfahci3wfx455ia.v2.com
+    password: '>3.6Eb.Niba9L8Xx>H0p'

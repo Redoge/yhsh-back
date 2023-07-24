@@ -69,7 +69,7 @@ class TrainingServiceTest {
     void saveAndAddToActivity() throws BadRequestException {
         var training = expectedTrainings.get(0);
         when(trainingRepository.save(training)).thenReturn(training);
-        var actualTraining = trainingService.saveAndAddToActivity(training, training.getActivity());
+        var actualTraining = trainingService.saveAndAddToActivity(training);
 
         assertEquals(training, actualTraining);
     }
@@ -99,7 +99,6 @@ class TrainingServiceTest {
         var expectedTraining = Training.builder()
                 .activity(activity)
                 .startTime(trainingDto.start())
-                .endTime(LocalDateTime.now())
                 .count(trainingDto.count())
                 .build();
         when(trainingRepository.save(any())).thenReturn(expectedTraining);

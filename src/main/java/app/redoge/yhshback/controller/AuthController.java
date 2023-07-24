@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static app.redoge.yhshback.utill.paths.Constants.AUTH_PATH;
+import static app.redoge.yhshback.utill.consts.Paths.AUTH_PATH;
 
 
 @RestController

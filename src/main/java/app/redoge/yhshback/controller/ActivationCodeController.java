@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import static app.redoge.yhshback.utill.paths.Constants.ACTIVATION_PATH;
+import static app.redoge.yhshback.utill.consts.Paths.ACTIVATION_PATH;
 
 
 @RestController

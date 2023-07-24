@@ -1,7 +1,6 @@
 package app.redoge.yhshback.service;
 
 import app.redoge.yhshback.dto.TrainingSaveRequestDto;
-import app.redoge.yhshback.entity.Activity;
 import app.redoge.yhshback.entity.Training;
 import app.redoge.yhshback.entity.User;
 import app.redoge.yhshback.entity.enums.TrainingMode;
@@ -32,8 +31,7 @@ public class TrainingService implements ITrainingService {
 
     @Override
     public Training save(Training training) throws BadRequestException {//TODO: encapsulate valid
-        if (training.getCount() > 0 &&
-                isNotEmpty(training.getActivity()) && isNotEmpty(training.getStartTime())) {
+        if (training.getCount() > 0 && isNotEmpty(training.getActivity()) && isNotEmpty(training.getStartTime())) {
             return trainingRepository.save(training);
         } else {
             throw new BadRequestException("Training not saved!!!");
@@ -49,10 +47,10 @@ public class TrainingService implements ITrainingService {
         trainingRepository.save(training);
         return true;
     }
-    @PreAuthorize("#activity.creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
+    @PreAuthorize("#training.activity.creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     @Override
-    public Training saveAndAddToActivity(Training training, Activity activity) throws BadRequestException {
-        activity.addTraining(training);
+    public Training saveAndAddToActivity(Training training) throws BadRequestException {
+        training.getActivity().addTraining(training);
         return save(training);
     }
     @PostAuthorize("returnObject.activity.creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
@@ -73,7 +71,7 @@ public class TrainingService implements ITrainingService {
                 .startTime(trainingDto.start())
                 .count(trainingDto.count())
                 .mode(TrainingMode.SOLO)
-              .build(), activity);
+              .build());
     }
     @PreAuthorize("#username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     @Override
@@ -105,5 +103,17 @@ public class TrainingService implements ITrainingService {
             }
             trainingRepository.saveAll(trainingList);
         }
+    }
+
+    @Override
+    public List<Training> addAllToActivity(List<Training> trainings) {
+        for(var training: trainings){
+            training.getActivity().addTraining(training);
+        }
+        return trainings;
+    }
+    @Override
+    public List<Training> saveAll(List<Training> trainings) {
+        return trainingRepository.saveAll(trainings);
     }
 }

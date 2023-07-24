@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.web.bind.annotation.*;
 
-import static app.redoge.yhshback.utill.paths.Constants.ADMIN_USER_PATH;
+import static app.redoge.yhshback.utill.consts.Paths.ADMIN_USER_PATH;
 
 @RestController
 @RequestMapping(ADMIN_USER_PATH)
