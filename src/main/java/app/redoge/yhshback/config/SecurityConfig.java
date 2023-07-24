@@ -44,7 +44,8 @@ public class SecurityConfig {
                                 USERS_PATH.concat(ALL_PATH),
                                 LOGINS_PATH.concat(ALL_PATH),
                                 TRAININGS_PATH.concat(ALL_PATH),
-                                ACTIVITIES_PATH.concat(ALL_PATH))
+                                ACTIVITIES_PATH.concat(ALL_PATH),
+                                WORKOUT_PATH.concat(ALL_PATH))
                         .hasAnyAuthority(
                                 UserRole.USER.name(),
                                 UserRole.ADMIN.name())
