@@ -13,8 +13,8 @@ jwt:
   secret: dtxkhjhvlgkibjtisnmgfdblbgugzorwhgwaiszmpxcbreewohqimfczfmbxfaoxccrfrvtnrviylbsqllmcrfvbhmfusxbjbeppahlhidyntgxutdtrexyhslayfcqdzewuqdznwmvutizuxwgiucdzhffkbjninlkbbchcnpbecbbcdavupjxqmaldxlmerqohmyqzhveftrcrygifcrahmwvaticryhtrccpikyvjktckyqfrthgsgahrcawwqsfqxsqxcbpnwwdfvxxwmvzwgmhrjyyxjvbfsxlexxejtcspunxhochztulcsdokqdowabhppaoydajfxlaoskzfsxxvcrncjswnyzxaocchkequjnjthjogocfsnpiubfysrlpvguconmppiguyvmlehidnzslhbeopdanxkamncjincmuwvqsteyjkailwmwwdxdkeamlzjhqjcniqewauxnjplckmknrjghavhydjlfogirqgwimcezyocbxs
 yhsh:
   admin:
-    username: Redoge
-    password: redoge1670
+    username: Test
+    password: password
     email: mail.redoge@gmail.com
   mail:
     host: smtp.email.eu-frankfurt-1.oci.oraclecloud.com

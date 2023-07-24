@@ -73,7 +73,6 @@ public class GenerateEntityUtil {
                         .id(i)
                         .count(i)
                         .startTime(LocalDateTime.now())
-                        .endTime(LocalDateTime.now())
                         .removed(false)
                         .activity(activities.get(i-1))
                         .build();

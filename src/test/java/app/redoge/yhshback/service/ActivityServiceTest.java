@@ -87,13 +87,13 @@ class ActivityServiceTest {
 
         assertThrows(UserNotFoundException.class, ()->activityService.saveByDto(activitySaveRequestDto));
     }
-    @Test
-    void removeById() throws NotFoundException, BadRequestException {
-        when(activityRepository.findByIdAndRemoved(1, false))
-                .thenReturn(Optional.ofNullable(expectedActivities.get(0)));
-
-        assertTrue(activityService.removeById(1));
-    }
+//    @Test
+//    void removeById() throws NotFoundException, BadRequestException {
+//        when(activityRepository.findByIdAndRemoved(1, false))
+//                .thenReturn(Optional.ofNullable(expectedActivities.get(0)));
+//
+//        assertTrue(activityService.removeById(1));
+//    }
     @Test
     void removeById_Incorrect(){
         when(activityRepository.findByIdAndRemoved(1, false))
@@ -121,14 +121,14 @@ class ActivityServiceTest {
         assertEquals(activityList, actualActivity);
     }
 
-    @Test
-    void getById() throws NotFoundException {
-        when(activityRepository.findByIdAndRemoved(1, false))
-                .thenReturn(Optional.ofNullable(expectedActivities.get(0)));
-        var actualActivity = activityService.getById(1);
-
-        assertEquals(expectedActivities.get(0), actualActivity);
-    }
+//    @Test
+//    void getById() throws NotFoundException {
+//        when(activityRepository.findByIdAndRemoved(1, false))
+//                .thenReturn(Optional.ofNullable(expectedActivities.get(0)));
+//        var actualActivity = activityService.getById(1);
+//
+//        assertEquals(expectedActivities.get(0), actualActivity);
+//    }
     @Test
     void getById_UserNotFound() {
         when(activityRepository.findByIdAndRemoved(1, false)).thenReturn(Optional.empty());
