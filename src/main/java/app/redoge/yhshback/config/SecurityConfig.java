@@ -18,7 +18,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-import static app.redoge.yhshback.utill.paths.Constants.*;
+import static app.redoge.yhshback.utill.consts.Paths.*;
 
 
 @Configuration

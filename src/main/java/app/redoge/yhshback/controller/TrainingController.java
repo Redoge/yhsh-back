@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static app.redoge.yhshback.utill.paths.Constants.TRAININGS_PATH;
+import static app.redoge.yhshback.utill.consts.Paths.TRAININGS_PATH;
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 

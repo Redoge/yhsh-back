@@ -1,7 +1,7 @@
-package app.redoge.yhshback.utill.paths;
+package app.redoge.yhshback.utill.consts;
 
-public class Constants {
-    private Constants() {}
+public class Paths {
+    private Paths() {}
     public static final String API_VERSION_PATH = "/api/v1/";
     public static final String USERS_PATH = API_VERSION_PATH + "users";
     public static final String TRAININGS_PATH = API_VERSION_PATH + "trainings";

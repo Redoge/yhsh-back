@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static app.redoge.yhshback.utill.paths.Constants.USERS_PATH;
+import static app.redoge.yhshback.utill.consts.Paths.USERS_PATH;
 import static org.apache.commons.lang3.math.NumberUtils.isCreatable;
 
 @RestController
