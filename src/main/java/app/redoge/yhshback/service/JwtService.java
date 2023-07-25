@@ -43,13 +43,14 @@ public class JwtService implements IJwtService {
             UserDetails userDetails
     ){
         var userRole = ((GrantedAuthority) userDetails.getAuthorities().toArray()[0]).getAuthority();
+        final var yearMillis = 31536000000L;
         return Jwts.
                 builder()
                 .setClaims(extraClaims)
                 .claim("userRole", userRole)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + (1000L * 60 * 60 * 24 * 30)))
+                .setExpiration(new Date(System.currentTimeMillis() + yearMillis))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
