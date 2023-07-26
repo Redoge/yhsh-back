@@ -1,10 +1,12 @@
 package app.redoge.yhshback.controller;
 
 import app.redoge.yhshback.dto.TrainingSaveRequestDto;
+import app.redoge.yhshback.dto.response.TrainingDto;
 import app.redoge.yhshback.entity.Training;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.service.interfaces.ITrainingService;
+import app.redoge.yhshback.utill.mappers.ResponseDtoMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,24 +21,33 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 @RequestMapping(TRAININGS_PATH)
 public class TrainingController {
     private final ITrainingService trainingService;
+    private final ResponseDtoMapper responseDtoMapper;
+
 
     @GetMapping
-    public List<Training> getAllTrainings(@RequestParam(value = "userId", required = false) Long userId,
-                                          @RequestParam(value = "username", required = false) String username) {
-        if (isNotEmpty(userId))
-            return trainingService.getAllTrainingByUserId(userId);
-        if (isNotEmpty(username))
-            return trainingService.getAllTrainingByUserUsername(username);
-        return trainingService.getAllTraining();
+    public List<TrainingDto> getAllTrainings(@RequestParam(value = "userId", required = false) Long userId,
+                                             @RequestParam(value = "username", required = false) String username) {
+        List<Training> trainings;
+        if (isNotEmpty(userId)) {
+            trainings = trainingService.getAllTrainingByUserId(userId);
+        }
+        else if (isNotEmpty(username)) {
+            trainings = trainingService.getAllTrainingByUserUsername(username);
+        }else{
+            trainings = trainingService.getAllTraining();
+        }
+        return trainings.stream().map(responseDtoMapper::mapTrainingToTrainingDto).toList();
     }
 
     @GetMapping("/{id}")
-    public Training getTrainingById(@PathVariable long id) throws NotFoundException {
-        return trainingService.getTrainingById(id);
+    public TrainingDto getTrainingById(@PathVariable long id) throws NotFoundException {
+        var training =  trainingService.getTrainingById(id);
+        return responseDtoMapper.mapTrainingToTrainingDto(training);
     }
     @PostMapping
-    public Training save(@RequestBody TrainingSaveRequestDto trainingDto) throws BadRequestException, NotFoundException {
-        return trainingService.saveByDto(trainingDto);
+    public TrainingDto save(@RequestBody TrainingSaveRequestDto trainingDto) throws BadRequestException, NotFoundException {
+        var training =  trainingService.saveByDto(trainingDto);
+        return responseDtoMapper.mapTrainingToTrainingDto(training);
     }
     @DeleteMapping("/{id}")
     public boolean removeById(@PathVariable long id) throws NotFoundException {
