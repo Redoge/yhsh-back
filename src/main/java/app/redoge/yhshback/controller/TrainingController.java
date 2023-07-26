@@ -26,14 +26,16 @@ public class TrainingController {
 
     @GetMapping
     public List<TrainingDto> getAllTrainings(@RequestParam(value = "userId", required = false) Long userId,
-                                             @RequestParam(value = "username", required = false) String username) {
+                                             @RequestParam(value = "username", required = false) String username,
+                                             @RequestParam(value = "activityId", required = false) Long activityId) {
         List<Training> trainings;
         if (isNotEmpty(userId)) {
             trainings = trainingService.getAllTrainingByUserId(userId);
-        }
-        else if (isNotEmpty(username)) {
+        } else if (isNotEmpty(username)) {
             trainings = trainingService.getAllTrainingByUserUsername(username);
-        }else{
+        } else if (isNotEmpty(activityId)){
+            trainings = trainingService.getAllTrainingByActivityId(activityId);
+        } else{
             trainings = trainingService.getAllTraining();
         }
         return trainings.stream().map(responseDtoMapper::mapTrainingToTrainingDto).toList();
