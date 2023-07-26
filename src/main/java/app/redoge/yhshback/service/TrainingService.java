@@ -116,4 +116,11 @@ public class TrainingService implements ITrainingService {
     public List<Training> saveAll(List<Training> trainings) {
         return trainingRepository.saveAll(trainings);
     }
+
+    @PreAuthorize("@activityService.getById(#activityId).creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
+    @Override
+    public List<Training> getAllTrainingByActivityId(long activityId) {
+        return trainingRepository.getTrainingByActivityIdAndRemovedAndActivityRemoved(activityId, false, false)
+                .stream().sorted(Comparator.comparing(Training::getStartTime).reversed()).toList();
+    }
 }

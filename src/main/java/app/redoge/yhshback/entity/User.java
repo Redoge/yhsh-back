@@ -2,7 +2,6 @@ package app.redoge.yhshback.entity;
 
 import app.redoge.yhshback.entity.enums.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,7 +35,6 @@ public class User implements UserDetails {
     private boolean emailConfirmed;
 
     @Column(name = "user_password")
-    @JsonIgnore
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -52,11 +50,9 @@ public class User implements UserDetails {
     private int heightSm;
 
     @OneToMany(mappedBy = "creator", fetch = FetchType.EAGER)
-    @JsonIgnoreProperties("creator")
     private List<Activity> activities;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    @JsonIgnoreProperties("user")
     private List<Workout> workouts;
 
     @Column(name = "user_enabled")

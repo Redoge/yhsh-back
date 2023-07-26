@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 @Component
 @AllArgsConstructor
-public class DtoMappers {
+public class RequestDtoMappers {
     private final ActivityService activityService;
     private final UserService userService;
     private final DtoValidators dtoValidators;

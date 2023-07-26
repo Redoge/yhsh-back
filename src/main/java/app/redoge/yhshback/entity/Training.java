@@ -24,7 +24,6 @@ public class Training implements Serializable {
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnoreProperties({"trainings", "creator"})
     private Activity activity;
 
     @Column(name = "training_count")

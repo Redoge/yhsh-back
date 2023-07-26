@@ -1,6 +1,5 @@
 package app.redoge.yhshback.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,11 +19,9 @@ public class Workout {
     private Long id;
 
     @OneToMany
-    @JsonIgnoreProperties("workouts")
     private List<Training> trainings;
 
     @ManyToOne
-    @JsonIgnoreProperties("workouts")
     private User user;
 
     @Column(name = "workouts_start_time")

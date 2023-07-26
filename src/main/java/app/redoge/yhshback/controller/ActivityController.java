@@ -2,11 +2,13 @@ package app.redoge.yhshback.controller;
 
 import app.redoge.yhshback.dto.ActivitySaveRequestDto;
 import app.redoge.yhshback.dto.ActivityUpdateDto;
+import app.redoge.yhshback.dto.response.ActivityDto;
 import app.redoge.yhshback.entity.Activity;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.exception.UserNotFoundException;
 import app.redoge.yhshback.service.interfaces.IActivityService;
+import app.redoge.yhshback.utill.mappers.ResponseDtoMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,27 +21,38 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 @AllArgsConstructor
 public class ActivityController {
     private final IActivityService activityService;
+    private final ResponseDtoMapper responseDtoMapper;
 
     @GetMapping
-    public List<Activity> getAll(@RequestParam(value = "creatorId", required = false) Long userId,
-                                 @RequestParam(value = "username", required = false) String username){
-        if(isNotEmpty(userId))
-            return activityService.getAllByCreatorId(userId);
-        if(isNotEmpty(username))
-            return activityService.getAllByCreatorUsername(username);
-        return activityService.getAll();
+    public List<ActivityDto> getAll(@RequestParam(value = "creatorId", required = false) Long userId,
+                                    @RequestParam(value = "username", required = false) String username) {
+        List<Activity> activity;
+        if (isNotEmpty(userId)) {
+            activity = activityService.getAllByCreatorId(userId);
+        } else if (isNotEmpty(username)) {
+            activity = activityService.getAllByCreatorUsername(username);
+        } else {
+            activity = activityService.getAll();
+        }
+        return activity.stream().map(responseDtoMapper::mapActivityToActivityDto).toList();
     }
+
     @GetMapping("/{id}")
-    public Activity getById(@PathVariable long id) throws NotFoundException {
-        return activityService.getById(id);
+    public ActivityDto getById(@PathVariable long id) throws NotFoundException {
+        var activity = activityService.getById(id);
+        return responseDtoMapper.mapActivityToActivityDto(activity);
     }
     @PostMapping
-    public Activity create(@RequestBody ActivitySaveRequestDto activitySaveRequestDto) throws BadRequestException, UserNotFoundException {
-        return activityService.saveByDto(activitySaveRequestDto);
+    public ActivityDto create(@RequestBody ActivitySaveRequestDto activitySaveRequestDto) throws BadRequestException, UserNotFoundException {
+        var activity = activityService.saveByDto(activitySaveRequestDto);
+        return responseDtoMapper.mapActivityToActivityDto(activity);
+
     }
     @PostMapping("/{id}")
-    public Activity update(@RequestBody ActivityUpdateDto activityRequestDto, @PathVariable long id) throws NotFoundException, BadRequestException {
-        return activityService.updateByDto(id, activityRequestDto);
+    public ActivityDto update(@RequestBody ActivityUpdateDto activityRequestDto, @PathVariable long id) throws NotFoundException, BadRequestException {
+        var activity = activityService.updateByDto(id, activityRequestDto);
+        return responseDtoMapper.mapActivityToActivityDto(activity);
+
     }
     @DeleteMapping("/{id}")
     public boolean deleteById(@PathVariable long id) throws NotFoundException, BadRequestException {
