@@ -2,7 +2,7 @@ package app.redoge.yhshback.service;
 
 
 import app.redoge.yhshback.dto.AuthenticationRequestDto;
-import app.redoge.yhshback.dto.AuthenticationResponseDto;
+import app.redoge.yhshback.dto.response.AuthenticationResponseDto;
 import app.redoge.yhshback.dto.RegisterRequestDto;
 import app.redoge.yhshback.entity.User;
 import app.redoge.yhshback.entity.enums.UserRole;
