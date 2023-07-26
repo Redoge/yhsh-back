@@ -9,7 +9,7 @@ import app.redoge.yhshback.repository.WorkoutRepository;
 import app.redoge.yhshback.service.interfaces.ITrainingService;
 import app.redoge.yhshback.service.interfaces.IWorkoutService;
 import app.redoge.yhshback.utill.filter.TrainingFilter;
-import app.redoge.yhshback.utill.mappers.DtoMappers;
+import app.redoge.yhshback.utill.mappers.RequestDtoMappers;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import java.util.List;
 public class WorkoutService implements IWorkoutService {
     private final WorkoutRepository workoutRepository;
     private final ITrainingService trainingService;
-    private final DtoMappers dtoMappers;
+    private final RequestDtoMappers requestDtoMappers;
     private final TrainingFilter trainingFilter;
     @Override
     public List<Workout> getAllWorkouts(){
@@ -42,7 +42,7 @@ public class WorkoutService implements IWorkoutService {
     }
     @Override
     public Workout saveByDto(WorkoutSaveDto dto) throws BadRequestException, NotFoundException {
-        var workout = dtoMappers.mapWorkoutSaveDtoToWorkout(dto);
+        var workout = requestDtoMappers.mapWorkoutSaveDtoToWorkout(dto);
         var trainings = trainingService.saveAll(workout.getTrainings());
         trainingService.addAllToActivity(new ArrayList<>(trainings));
         workout.setTrainings(trainings);
