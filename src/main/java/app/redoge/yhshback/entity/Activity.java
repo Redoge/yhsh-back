@@ -1,6 +1,5 @@
 package app.redoge.yhshback.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,11 +33,9 @@ public class Activity implements Serializable {
     private String notation;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnoreProperties("activities")
     private User creator;
 
     @OneToMany(fetch = FetchType.EAGER)
-    @JsonIgnoreProperties("activity")
     private List<Training> trainings;
 
     @Column(name = "activity_is_removed")
