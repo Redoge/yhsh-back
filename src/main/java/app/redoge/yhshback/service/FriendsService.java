@@ -1,11 +1,13 @@
 package app.redoge.yhshback.service;
 
 import app.redoge.yhshback.dto.FriendshipRequestDto;
+import app.redoge.yhshback.dto.response.UserDto;
 import app.redoge.yhshback.entity.Friends;
 import app.redoge.yhshback.entity.User;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.repository.FriendsRepository;
 import app.redoge.yhshback.service.interfaces.IFriendService;
+import app.redoge.yhshback.utill.mappers.ResponseDtoMapper;
 import app.redoge.yhshback.utill.validators.DtoValidators;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -62,13 +64,23 @@ public class FriendsService implements IFriendService {
 
     @Override
     @PreAuthorize("@userService.getUserById(#id).username.equalsIgnoreCase(authentication.name)")
-    public List<Friends> findByUserId(long id) {
-        return repository.findByUser1IdAndUser2Id(id, id);
+    public List<User> findByUserId(long id){
+        return repository.findByUser1IdOrUser2Id(id, id).stream().map(
+                    friends-> {
+                        if(friends.getUser1().getId()==id) return friends.getUser2();
+                        return friends.getUser1();
+                    }
+                ).toList();
     }
 
     @Override
     @PreAuthorize("#username.equalsIgnoreCase(authentication.name)")
-    public List<Friends> findByUserUsername(String username) {
-        return repository.findAllByUser1UsernameOrUser2Username(username, username);
+    public List<User> findByUserUsername(String username) {
+        return repository.findAllByUser1UsernameOrUser2Username(username, username).stream().map(
+                friends-> {
+                    if(friends.getUser1().getUsername().equalsIgnoreCase(username)) return friends.getUser2();
+                    return friends.getUser1();
+                }
+        ).toList();
     }
 }

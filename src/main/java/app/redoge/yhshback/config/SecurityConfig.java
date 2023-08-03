@@ -42,6 +42,7 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(
                                 USERS_PATH.concat(ALL_PATH),
+                                FRIENDSHIP_PATH.concat(ALL_PATH),
                                 LOGINS_PATH.concat(ALL_PATH),
                                 TRAININGS_PATH.concat(ALL_PATH),
                                 ACTIVITIES_PATH.concat(ALL_PATH),

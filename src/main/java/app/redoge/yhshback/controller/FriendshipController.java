@@ -23,4 +23,9 @@ public class FriendshipController {
         service.createRequestOrFriendsByDto(dto);
         return true;
     }
+    @PostMapping("/remove")
+    public boolean removeFriendshipRequest(@RequestBody FriendshipRequestDto dto) throws UserNotFoundException, BadRequestException {
+        service.removeByFriendshipDto(dto);
+        return true;
+    }
 }

@@ -61,4 +61,13 @@ public class ResponseDtoMapper {
                 mapUserToUserDto(friends.getUser2())
                 );
     }
+
+    public FriendshipDto mapFriendshipToFriendshipDto(Friendship friendship) {
+        return new FriendshipDto(
+                friendship.getId(),
+                mapUserToUserDto(friendship.getSender()),
+                mapUserToUserDto(friendship.getRecipient()),
+                friendship.getCreated()
+        );
+    }
 }
