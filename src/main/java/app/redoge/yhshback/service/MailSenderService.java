@@ -17,7 +17,7 @@ import static java.lang.String.format;
 @AllArgsConstructor
 public class MailSenderService implements IMailSenderService {
     private final MailSender mailSender;
-    private static final String FROM_EMAIL = "noreply@yhsh.app";
+    private static final String FROM_EMAIL = "noreply@yhsh.me";
     private static final String SUBJECT_EMAIL = "Activation account";
     private static final String TEXT_CONFIRMATION_EMAIL = "Dear %s, to confirm your account, please enter the following code - %s . Good bye!";
     private static final String TEXT_SUCCESSFUL_EMAIL = "Dear %s, you successful confirm your account!!!";

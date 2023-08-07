@@ -1,14 +1,10 @@
 package app.redoge.yhshback.utill.mappers;
 
-import app.redoge.yhshback.dto.response.ActivityDto;
-import app.redoge.yhshback.dto.response.TrainingDto;
-import app.redoge.yhshback.dto.response.UserDto;
-import app.redoge.yhshback.dto.response.WorkoutDto;
-import app.redoge.yhshback.entity.Activity;
-import app.redoge.yhshback.entity.Training;
-import app.redoge.yhshback.entity.User;
-import app.redoge.yhshback.entity.Workout;
+import app.redoge.yhshback.dto.response.*;
+import app.redoge.yhshback.entity.*;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class ResponseDtoMapper {
@@ -58,4 +54,20 @@ public class ResponseDtoMapper {
         );
     }
 
+    public FriendsDto mapFriendsToFriendsDto(Friends friends) {
+        return new FriendsDto(
+                friends.getId(),
+                mapUserToUserDto(friends.getUser1()),
+                mapUserToUserDto(friends.getUser2())
+                );
+    }
+
+    public FriendshipDto mapFriendshipToFriendshipDto(Friendship friendship) {
+        return new FriendshipDto(
+                friendship.getId(),
+                mapUserToUserDto(friendship.getSender()),
+                mapUserToUserDto(friendship.getRecipient()),
+                friendship.getCreated()
+        );
+    }
 }

@@ -56,4 +56,9 @@ public class DtoValidators {
                 && dto.count() > 0
                 && isNotEmpty(dto.startTime());
     }
+
+    public boolean friendshipRequestDtoIsValid(FriendshipRequestDto dto) {
+        return isNotEmpty(dto.recipientUsername())
+                && isNotEmpty(dto.senderUsername());
+    }
 }

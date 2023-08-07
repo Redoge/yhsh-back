@@ -33,7 +33,6 @@ public class UserService implements  IUserService {
     private final UserRepository userRepository;
     private final DtoValidators dtoValidators;
     @Override
-    @PreAuthorize("#username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     public User findUserByUsername(String username) throws UserNotFoundException {
         return userRepository.findByUsername(username).orElseThrow(()->new UserNotFoundException(username));
     }
