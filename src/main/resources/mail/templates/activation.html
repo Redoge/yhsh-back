@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Activation</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(33, 37, 41);
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-top: 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        a:hover {
+            color: #000;
+        }
+
+        .container {
+            width: 600px;
+            margin: 0 auto;
+        }
+
+        .confirm-link {
+            background-color: rgb(108, 117, 125);
+            color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .confirm-link:hover {
+            background-color: rgb(88, 97, 105);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Hello, %s!!!</h1>
+    <hr>
+    <p>Please confirm your email by clicking on the link below.</p>
+    <a class="confirm-link" href="https://yhsh.me/email/activation?token=%s" target="_blank">Confirm</a>
+    <p>Or enter the following code in the code field on YHSH:</p>
+    <p>%s</p>
+</div>
+</body>
+</html>
