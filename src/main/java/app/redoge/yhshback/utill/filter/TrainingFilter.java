@@ -1,7 +1,6 @@
 package app.redoge.yhshback.utill.filter;
 
 import app.redoge.yhshback.entity.Training;
-import app.redoge.yhshback.entity.Workout;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
