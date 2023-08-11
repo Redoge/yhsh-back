@@ -1,13 +1,16 @@
 package app.redoge.yhshback.controller;
 
+import app.redoge.yhshback.dto.Page;
 import app.redoge.yhshback.dto.TrainingSaveRequestDto;
 import app.redoge.yhshback.dto.response.TrainingDto;
 import app.redoge.yhshback.entity.Training;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.service.interfaces.ITrainingService;
+import app.redoge.yhshback.utill.mappers.PageMapper;
 import app.redoge.yhshback.utill.mappers.ResponseDtoMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,12 +25,14 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 public class TrainingController {
     private final ITrainingService trainingService;
     private final ResponseDtoMapper responseDtoMapper;
+    private final PageMapper<TrainingDto> pageMapper;
 
 
     @GetMapping
-    public List<TrainingDto> getAllTrainings(@RequestParam(value = "userId", required = false) Long userId,
+    public Page<TrainingDto> getAllTrainings(@RequestParam(value = "userId", required = false) Long userId,
                                              @RequestParam(value = "username", required = false) String username,
-                                             @RequestParam(value = "activityId", required = false) Long activityId) {
+                                             @RequestParam(value = "activityId", required = false) Long activityId,
+                                             Pageable pageable) {
         List<Training> trainings;
         if (isNotEmpty(userId)) {
             trainings = trainingService.getAllTrainingByUserId(userId);
@@ -38,7 +43,8 @@ public class TrainingController {
         } else{
             trainings = trainingService.getAllTraining();
         }
-        return trainings.stream().map(responseDtoMapper::mapTrainingToTrainingDto).toList();
+        var dto = trainings.stream().map(responseDtoMapper::mapTrainingToTrainingDto).toList();
+        return pageMapper.mapToPage(dto, pageable);
     }
 
     @GetMapping("/{id}")

@@ -1,9 +1,8 @@
 package app.redoge.yhshback.controller;
 
-import app.redoge.yhshback.dto.response.FriendsDto;
+import app.redoge.yhshback.dto.Page;
 import app.redoge.yhshback.dto.response.FriendshipDto;
 import app.redoge.yhshback.dto.response.UserDto;
-import app.redoge.yhshback.entity.Friends;
 import app.redoge.yhshback.entity.Friendship;
 import app.redoge.yhshback.entity.User;
 import app.redoge.yhshback.exception.BadRequestException;
@@ -13,8 +12,10 @@ import app.redoge.yhshback.dto.UserUpdateRequestDto;
 import app.redoge.yhshback.service.interfaces.IFriendService;
 import app.redoge.yhshback.service.interfaces.IFriendshipService;
 import app.redoge.yhshback.service.interfaces.IUserService;
+import app.redoge.yhshback.utill.mappers.PageMapper;
 import app.redoge.yhshback.utill.mappers.ResponseDtoMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,14 +32,17 @@ public class UserController {
     private final ResponseDtoMapper responseDtoMapper;
     private final IFriendService friendService;
     private final IFriendshipService friendshipService;
+    private final PageMapper<UserDto> pageMapper;
 
     @GetMapping
-    public List<UserDto> getUsers(@RequestParam(value = "filterParam", required = false) String param,
-                                  @RequestParam(value = "filterValue", required = false) String value) throws NotFoundException {
-        return userService.getUsersByFilter(param, value)
+    public Page<UserDto> getUsers(@RequestParam(value = "filterParam", required = false) String param,
+                                  @RequestParam(value = "filterValue", required = false) String value,
+                                  Pageable pageable) throws NotFoundException {
+        var dto = userService.getUsersByFilter(param, value)
                 .stream()
                 .map(responseDtoMapper::mapUserToUserDto)
                 .toList();
+        return pageMapper.mapToPage(dto, pageable);
     }
     @GetMapping("/{idOrUsername}")
     public UserDto getUserById(@PathVariable String idOrUsername) throws UserNotFoundException {
@@ -58,18 +62,20 @@ public class UserController {
     }
 
     @GetMapping("/{idOrUsername}/friends")
-    public List<UserDto> getUserByIdOrUsername(@PathVariable String idOrUsername) throws UserNotFoundException {
+    public Page<UserDto> getUserByIdOrUsername(@PathVariable String idOrUsername,
+                                               Pageable pageable) throws UserNotFoundException {
         List<User> friends;
         if(isCreatable(idOrUsername)){
             friends = friendService.findByUserId(parseLong(idOrUsername));
         }else{
             friends = friendService.findByUserUsername(idOrUsername);
         }
-        return friends.stream().map(responseDtoMapper::mapUserToUserDto).toList();
+        var dto = friends.stream().map(responseDtoMapper::mapUserToUserDto).toList();
+        return pageMapper.mapToPage(dto, pageable);
     }
 
     @GetMapping("/{idOrUsername}/friends/requests")
-    public List<FriendshipDto> getFriendRequestByIdOrUsername(@PathVariable String idOrUsername) throws UserNotFoundException {
+    public List<FriendshipDto> getFriendRequestByIdOrUsername(@PathVariable String idOrUsername){
         List<Friendship> friends;
         if(isCreatable(idOrUsername)){
             friends = friendshipService.findRequestByUserId(parseLong(idOrUsername));

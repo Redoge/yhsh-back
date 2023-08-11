@@ -2,14 +2,17 @@ package app.redoge.yhshback.controller;
 
 import app.redoge.yhshback.dto.ActivitySaveRequestDto;
 import app.redoge.yhshback.dto.ActivityUpdateDto;
+import app.redoge.yhshback.dto.Page;
 import app.redoge.yhshback.dto.response.ActivityDto;
 import app.redoge.yhshback.entity.Activity;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.exception.UserNotFoundException;
 import app.redoge.yhshback.service.interfaces.IActivityService;
+import app.redoge.yhshback.utill.mappers.PageMapper;
 import app.redoge.yhshback.utill.mappers.ResponseDtoMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,10 +25,12 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 public class ActivityController {
     private final IActivityService activityService;
     private final ResponseDtoMapper responseDtoMapper;
+    private final PageMapper<ActivityDto> pageMapper;
 
     @GetMapping
-    public List<ActivityDto> getAll(@RequestParam(value = "creatorId", required = false) Long userId,
-                                    @RequestParam(value = "username", required = false) String username) {
+    public Page<ActivityDto> getAll(@RequestParam(value = "creatorId", required = false) Long userId,
+                                    @RequestParam(value = "username", required = false) String username,
+                                    Pageable pageable) {
         List<Activity> activity;
         if (isNotEmpty(userId)) {
             activity = activityService.getAllByCreatorId(userId);
@@ -34,7 +39,8 @@ public class ActivityController {
         } else {
             activity = activityService.getAll();
         }
-        return activity.stream().map(responseDtoMapper::mapActivityToActivityDto).toList();
+        var dto = activity.stream().map(responseDtoMapper::mapActivityToActivityDto).toList();
+        return pageMapper.mapToPage(dto, pageable);
     }
 
     @GetMapping("/{id}")
