@@ -9,6 +9,7 @@ import app.redoge.yhshback.repository.WorkoutRepository;
 import app.redoge.yhshback.service.interfaces.ITrainingService;
 import app.redoge.yhshback.service.interfaces.IWorkoutService;
 import app.redoge.yhshback.utill.filter.TrainingFilter;
+import app.redoge.yhshback.utill.filter.WorkoutFilter;
 import app.redoge.yhshback.utill.mappers.RequestDtoMappers;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ public class WorkoutService implements IWorkoutService {
     private final WorkoutRepository workoutRepository;
     private final ITrainingService trainingService;
     private final RequestDtoMappers requestDtoMappers;
+    private final WorkoutFilter workoutFilter;
     private final TrainingFilter trainingFilter;
     @Override
     public List<Workout> getAllWorkouts(){
@@ -51,12 +53,12 @@ public class WorkoutService implements IWorkoutService {
     @Override
     public List<Workout> getAllWorkoutsByUser(User user){
         var workouts = workoutRepository.findByUserAndRemoved(user, false);
-        return trainingFilter.filterWorkoutListNotRemovedTraining(workouts);
+        return workoutFilter.filterWorkoutListByNotEmptyAndNotRemovedTraining(workouts);
     }
     @Override
     public List<Workout> getAllWorkoutByUsername(String username){
         var workouts =  workoutRepository.findAllByUserUsernameAndRemoved(username, false);
-        return trainingFilter.filterWorkoutListNotRemovedTraining(workouts);
+        return workoutFilter.filterWorkoutListByNotEmptyAndNotRemovedTraining(workouts);
     }
 
     @Transactional
@@ -71,6 +73,6 @@ public class WorkoutService implements IWorkoutService {
     @Override
     public List<Workout> getAllWorkoutByUserId(Long userId) {
         var workouts = workoutRepository.findAllByUserIdAndRemoved(userId, false);
-        return trainingFilter.filterWorkoutListNotRemovedTraining(workouts);
+        return workoutFilter.filterWorkoutListByNotEmptyAndNotRemovedTraining(workouts);
     }
 }
