@@ -1,13 +1,16 @@
 package app.redoge.yhshback.controller;
 
+import app.redoge.yhshback.dto.Page;
 import app.redoge.yhshback.dto.WorkoutSaveDto;
 import app.redoge.yhshback.dto.response.WorkoutDto;
 import app.redoge.yhshback.entity.Workout;
 import app.redoge.yhshback.exception.BadRequestException;
 import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.service.interfaces.IWorkoutService;
+import app.redoge.yhshback.utill.mappers.PageMapper;
 import app.redoge.yhshback.utill.mappers.ResponseDtoMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,10 +24,12 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 public class WorkoutController {
     private final IWorkoutService workoutService;
     private final ResponseDtoMapper responseDtoMapper;
+    private final PageMapper<WorkoutDto> pageMapper;
 
     @GetMapping
-    public List<WorkoutDto> getAllWorkout(@RequestParam(value = "userId", required = false) Long userId,
-                                          @RequestParam(value = "username", required = false) String username) {
+    public Page<WorkoutDto> getAllWorkout(@RequestParam(value = "userId", required = false) Long userId,
+                                          @RequestParam(value = "username", required = false) String username,
+                                          Pageable pageable) {
         List<Workout> workout;
         if (isNotEmpty(userId)) {
             workout = workoutService.getAllWorkoutByUserId(userId);
@@ -33,7 +38,8 @@ public class WorkoutController {
         } else {
             workout = workoutService.getAllWorkouts();
         }
-        return workout.stream().map(responseDtoMapper::mapWorkoutToWorkoutDto).toList();
+        var dto = workout.stream().map(responseDtoMapper::mapWorkoutToWorkoutDto).toList();
+        return pageMapper.mapToPage(dto, pageable);
     }
 
     @GetMapping("/{id}")
