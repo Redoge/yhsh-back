@@ -16,7 +16,6 @@ import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class Activity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1905122041952221207L;
@@ -26,11 +25,21 @@ public class Activity implements Serializable {
     @Column(name = "activity_id")
     private long id;
 
-    @Column(name = "activity_name")
+    @Column(name = "activity_name", length = 50)
     private String name;
 
-    @Column(name = "activity_notation")
-    private String notation;
+    @Column(name = "activity_description")
+    private String description;
+
+    @Column(name = "activity_with_weight")
+    private boolean withWeight;
+
+    @Column(name = "activity_default_weight")
+    private int defaultWeight;
+
+    @Column(name = "activity_type")
+    @ManyToOne
+    private ActivityType type;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private User creator;

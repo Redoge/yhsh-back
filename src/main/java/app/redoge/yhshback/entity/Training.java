@@ -32,6 +32,9 @@ public class Training implements Serializable {
     @Column(name = "training_start_time")
     private LocalDateTime startTime;
 
+    @Column(name = "training_weight")
+    private int weight;
+
     @Column(name = "training_is_removed")
     private boolean removed = false;
 
