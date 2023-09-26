@@ -1,18 +1,18 @@
 package app.redoge.yhshback.service.interfaces;
 
 import app.redoge.yhshback.entity.ActivityType;
+import app.redoge.yhshback.exception.NotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface IActivityType {
+public interface IActivityTypeService {
     ActivityType save(ActivityType activityType);
 
     List<ActivityType> getAll();
 
-    Optional<ActivityType> getByName(String name);
+    ActivityType getByName(String name) throws NotFoundException;
 
-    Optional<ActivityType> getById(int id);
+    ActivityType getById(int id) throws NotFoundException;
 
     List<ActivityType> saveAll(List<ActivityType> activityTypes);
 }

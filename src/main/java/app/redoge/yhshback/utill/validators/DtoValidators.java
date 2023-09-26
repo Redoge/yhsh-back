@@ -10,7 +10,7 @@ public class DtoValidators {
     public boolean activitySaveRequestDtoIsValid(ActivitySaveRequestDto dto){
         return isNotEmpty(dto.name())
                 && isNotEmpty(dto.username())
-                && isNotEmpty(dto.notation());
+                && isNotEmpty(dto.typeName());
     }
 
     public boolean trainingSaveRequestDtoIsValid(TrainingSaveRequestDto dto) {
@@ -39,7 +39,7 @@ public class DtoValidators {
 
     public boolean activityUpdateDtoIsValid(ActivityUpdateDto dto){
         return isNotEmpty(dto.id())
-                && isNotEmpty(dto.notation())
+                && isNotEmpty(dto.typeName())
                 && isNotEmpty(dto.name());
     }
 

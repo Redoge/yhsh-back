@@ -49,7 +49,7 @@ public class ActivityController {
         return responseDtoMapper.mapActivityToActivityDto(activity);
     }
     @PostMapping
-    public ActivityDto create(@RequestBody ActivitySaveRequestDto activitySaveRequestDto) throws BadRequestException, UserNotFoundException {
+    public ActivityDto create(@RequestBody ActivitySaveRequestDto activitySaveRequestDto) throws BadRequestException, UserNotFoundException, NotFoundException {
         var activity = activityService.saveByDto(activitySaveRequestDto);
         return responseDtoMapper.mapActivityToActivityDto(activity);
 

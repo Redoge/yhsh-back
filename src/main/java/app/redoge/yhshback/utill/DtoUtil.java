@@ -23,6 +23,6 @@ public class DtoUtil {
                 counts.stream().mapToInt(t->t).min().orElse(0),
                 counts.stream().mapToInt(t->t).max().orElse(0),
                 (int) counts.stream().mapToInt(t->t).average().orElse(0),
-                counts.size(), activity.getNotation());
+                counts.size(), activity.getType().getNotation());
     }
 }

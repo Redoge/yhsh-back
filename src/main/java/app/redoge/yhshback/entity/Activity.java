@@ -37,7 +37,6 @@ public class Activity implements Serializable {
     @Column(name = "activity_default_weight")
     private int defaultWeight;
 
-    @Column(name = "activity_type")
     @ManyToOne
     private ActivityType type;
 

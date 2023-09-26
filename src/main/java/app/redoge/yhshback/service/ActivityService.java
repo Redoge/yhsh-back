@@ -9,6 +9,7 @@ import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.exception.UserNotFoundException;
 import app.redoge.yhshback.repository.ActivityRepository;
 import app.redoge.yhshback.service.interfaces.IActivityService;
+import app.redoge.yhshback.service.interfaces.IActivityTypeService;
 import app.redoge.yhshback.service.interfaces.IUserService;
 import app.redoge.yhshback.utill.filter.TrainingFilter;
 import app.redoge.yhshback.utill.validators.DtoValidators;
@@ -29,6 +30,7 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 public class ActivityService implements IActivityService {
     private final ActivityRepository activityRepository;
     private final IUserService userService;
+    private final IActivityTypeService activityTypeService;
     private final DtoValidators dtoValidators;
     private final TrainingFilter trainingFilter;
 
@@ -50,15 +52,16 @@ public class ActivityService implements IActivityService {
     }
     @PreAuthorize("#activitySaveRequestDto.username().equalsIgnoreCase(authentication.name)")
     @Override
-    public Activity saveByDto(ActivitySaveRequestDto activitySaveRequestDto) throws BadRequestException, UserNotFoundException {
+    public Activity saveByDto(ActivitySaveRequestDto activitySaveRequestDto) throws BadRequestException, UserNotFoundException, NotFoundException {
         if(!dtoValidators.activitySaveRequestDtoIsValid(activitySaveRequestDto))
             throw new BadRequestException("Activity not valid!!!");
         var creator = userService.findUserByUsername(activitySaveRequestDto.username());
+        var activityType = activityTypeService.getByName(activitySaveRequestDto.typeName());
         var activity = Activity.builder()
                 .creator(creator)
                 .removed(false)
                 .name(activitySaveRequestDto.name())
-                .notation(activitySaveRequestDto.notation())
+                .type(activityType)
                 .build();
         return  activityRepository.save(activity);
     }
@@ -99,9 +102,10 @@ public class ActivityService implements IActivityService {
         if(!id.equals(activityRequestDto.id()))
             throw new BadRequestException("Activity id not equal path id");
         var activity = getById(id);
+        var activityType = activityTypeService.getByName(activityRequestDto.typeName());
         if(dtoValidators.activityUpdateDtoIsValid(activityRequestDto)){
             activity.setName(activityRequestDto.name());
-            activity.setNotation(activityRequestDto.notation());
+            activity.setType(activityType);
             return save(activity);
         }
         throw new BadRequestException("Activity name and notation can't be empty");

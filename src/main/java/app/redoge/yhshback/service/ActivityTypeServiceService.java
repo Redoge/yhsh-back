@@ -1,17 +1,17 @@
 package app.redoge.yhshback.service;
 
 import app.redoge.yhshback.entity.ActivityType;
+import app.redoge.yhshback.exception.NotFoundException;
 import app.redoge.yhshback.repository.ActivityTypeRepository;
-import app.redoge.yhshback.service.interfaces.IActivityType;
+import app.redoge.yhshback.service.interfaces.IActivityTypeService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class ActivityTypeService implements IActivityType {
+public class ActivityTypeServiceService implements IActivityTypeService {
     private final ActivityTypeRepository repository;
 
     @Override
@@ -28,12 +28,13 @@ public class ActivityTypeService implements IActivityType {
     }
 
     @Override
-    public Optional<ActivityType> getByName(String name) {
-        return repository.findByName(name);
+    public ActivityType getByName(String name) throws NotFoundException {
+        return repository.findByName(name)
+                .orElseThrow(()-> new NotFoundException("Activity type", name));
     }
 
     @Override
-    public Optional<ActivityType> getById(int id) {
-        return repository.findById(id);
+    public ActivityType getById(int id) throws NotFoundException {
+        return repository.findById(id).orElseThrow(()-> new NotFoundException("Activity type", id));
     }
 }
