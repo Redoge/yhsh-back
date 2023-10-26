@@ -14,7 +14,8 @@ import java.util.List;
 public class DtoUtil {
     private final TrainingFilter trainingFilter;
     public UserActivityStatsDto buildUserActivityStatsDtoByActivity(Activity activity){
-        List<Integer> counts = trainingFilter.filterNotRemovedTraining(activity.getTrainings())
+        List<Training> trainings = trainingFilter.filterNotRemovedTraining(activity.getTrainings());
+        List<Integer> counts = trainings
                 .stream()
                 .map(Training::getCount)
                 .toList();
@@ -23,6 +24,8 @@ public class DtoUtil {
                 counts.stream().mapToInt(t->t).min().orElse(0),
                 counts.stream().mapToInt(t->t).max().orElse(0),
                 (int) counts.stream().mapToInt(t->t).average().orElse(0),
-                counts.size(), activity.getNotation());
+                counts.size(),
+                trainings.stream().mapToDouble(Training::getWeight).average().orElse(0),
+                activity.getType().getNotation());
     }
 }

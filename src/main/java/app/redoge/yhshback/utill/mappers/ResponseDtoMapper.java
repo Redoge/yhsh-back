@@ -4,7 +4,6 @@ import app.redoge.yhshback.dto.response.*;
 import app.redoge.yhshback.entity.*;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 
 @Component
 public class ResponseDtoMapper {
@@ -26,9 +25,10 @@ public class ResponseDtoMapper {
         return new ActivityDto(
                 activity.getId(),
                 activity.getName(),
-                activity.getNotation(),
+                mapActivityTypeToActivityTypeDto(activity.getType()),
                 activity.getCreator().getId(),
-                activity.isRemoved()
+                activity.isRemoved(),
+                activity.isWithWeight()
         );
     }
     public TrainingDto mapTrainingToTrainingDto(Training training){
@@ -38,7 +38,8 @@ public class ResponseDtoMapper {
                 training.getCount(),
                 training.getStartTime(),
                 training.isRemoved(),
-                training.getMode()
+                training.getMode(),
+                training.getWeight()
         );
     }
     public WorkoutDto mapWorkoutToWorkoutDto(Workout workout){
@@ -68,6 +69,12 @@ public class ResponseDtoMapper {
                 mapUserToUserDto(friendship.getSender()),
                 mapUserToUserDto(friendship.getRecipient()),
                 friendship.getCreated()
+        );
+    }
+    public ActivityTypeDto mapActivityTypeToActivityTypeDto(ActivityType activityType){
+        return new ActivityTypeDto(
+                activityType.getName(),
+                activityType.getNotation()
         );
     }
 }

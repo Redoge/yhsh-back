@@ -1,4 +1,4 @@
 package app.redoge.yhshback.dto;
 
-public record ActivitySaveRequestDto(String name, String notation, String username) {
+public record ActivitySaveRequestDto(String name, String typeName, String username, boolean withWeight) {
 }

@@ -13,7 +13,7 @@ import java.util.List;
 public interface IActivityService {
     List<Activity> getAll();
     Activity save(Activity activity) throws BadRequestException;
-    Activity saveByDto(ActivitySaveRequestDto activitySaveRequestDto) throws BadRequestException, UserNotFoundException;
+    Activity saveByDto(ActivitySaveRequestDto activitySaveRequestDto) throws BadRequestException, UserNotFoundException, NotFoundException;
     boolean removeById(long activityId) throws NotFoundException, BadRequestException;
     List<Activity> getAllByCreatorUsername(String username);
     List<Activity> getAllByCreatorId(Long userId);

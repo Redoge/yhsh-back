@@ -52,6 +52,7 @@ public class RequestDtoMappers {
                 .count(dto.count())
                 .activity(activity)
                 .removed(false)
+                .weight(dto.weight())
                 .build();
     }
 }

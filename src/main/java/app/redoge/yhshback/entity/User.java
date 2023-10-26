@@ -56,6 +56,7 @@ public class User implements UserDetails {
     private List<Workout> workouts;
 
     @Column(name = "user_enabled")
+    @Builder.Default
     private boolean enabled = true;
 
     @Override

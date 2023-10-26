@@ -6,7 +6,7 @@ spring:
       password: admin
       name: admin
   datasource:
-    url: jdbc:mysql://localhost:3306/yhshback
+    url: jdbc:mysql://localhost:3306/yhsh_dev
     username: redoge
     password: redoge1670
 api:

@@ -47,12 +47,14 @@ public class TrainingService implements ITrainingService {
         trainingRepository.save(training);
         return true;
     }
+
     @PreAuthorize("#training.activity.creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     @Override
     public Training saveAndAddToActivity(Training training) throws BadRequestException {
         training.getActivity().addTraining(training);
         return save(training);
     }
+
     @PostAuthorize("returnObject.activity.creator.username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     @Override
     public Training getTrainingById(long id) throws NotFoundException {
@@ -63,7 +65,7 @@ public class TrainingService implements ITrainingService {
     @PreAuthorize("@activityService.getById(#trainingDto.activityId()).creator.username.equalsIgnoreCase(authentication.name)")
     @Override
     public Training saveByDto(TrainingSaveRequestDto trainingDto) throws NotFoundException, BadRequestException {
-        if(!dtoValidators.trainingSaveRequestDtoIsValid(trainingDto))
+        if (!dtoValidators.trainingSaveRequestDtoIsValid(trainingDto))
             throw new BadRequestException("Training not saved!!!");
         var activity = activityService.getById(trainingDto.activityId());
         return saveAndAddToActivity(Training.builder()
@@ -71,8 +73,10 @@ public class TrainingService implements ITrainingService {
                 .startTime(trainingDto.start())
                 .count(trainingDto.count())
                 .mode(TrainingMode.SOLO)
-              .build());
+                .weight(activity.isWithWeight() ? trainingDto.weight() : 0)
+                .build());
     }
+
     @PreAuthorize("#username.equalsIgnoreCase(authentication.name) or hasAuthority('ADMIN')")
     @Override
     public List<Training> getAllTrainingByUserUsername(String username) {
@@ -107,11 +111,12 @@ public class TrainingService implements ITrainingService {
 
     @Override
     public List<Training> addAllToActivity(List<Training> trainings) {
-        for(var training: trainings){
+        for (var training : trainings) {
             training.getActivity().addTraining(training);
         }
         return trainings;
     }
+
     @Override
     public List<Training> saveAll(List<Training> trainings) {
         return trainingRepository.saveAll(trainings);
