@@ -34,9 +34,6 @@ public class Activity implements Serializable {
     @Column(name = "activity_with_weight")
     private boolean withWeight;
 
-    @Column(name = "activity_default_weight")
-    private int defaultWeight;
-
     @ManyToOne
     private ActivityType type;
 
@@ -47,6 +44,7 @@ public class Activity implements Serializable {
     private List<Training> trainings;
 
     @Column(name = "activity_is_removed")
+    @Builder.Default
     private boolean removed = false;
 
     public void addTraining(Training training) {

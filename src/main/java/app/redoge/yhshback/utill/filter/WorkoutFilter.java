@@ -15,7 +15,7 @@ public class WorkoutFilter {
         var filteredWorkouts = new ArrayList<Workout>();
         for(var workout : workouts){
             var trainings = trainingFilter.filterNotRemovedTraining(workout.getTrainings());
-            if(trainings.size()>0){
+            if(!trainings.isEmpty()){
                 workout.setTrainings(trainings);
                 filteredWorkouts.add(workout);
             }

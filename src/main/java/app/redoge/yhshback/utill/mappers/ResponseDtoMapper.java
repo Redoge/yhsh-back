@@ -27,7 +27,8 @@ public class ResponseDtoMapper {
                 activity.getName(),
                 mapActivityTypeToActivityTypeDto(activity.getType()),
                 activity.getCreator().getId(),
-                activity.isRemoved()
+                activity.isRemoved(),
+                activity.isWithWeight()
         );
     }
     public TrainingDto mapTrainingToTrainingDto(Training training){
@@ -37,7 +38,8 @@ public class ResponseDtoMapper {
                 training.getCount(),
                 training.getStartTime(),
                 training.isRemoved(),
-                training.getMode()
+                training.getMode(),
+                training.getWeight()
         );
     }
     public WorkoutDto mapWorkoutToWorkoutDto(Workout workout){

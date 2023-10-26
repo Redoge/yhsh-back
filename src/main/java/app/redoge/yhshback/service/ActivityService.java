@@ -62,6 +62,7 @@ public class ActivityService implements IActivityService {
                 .removed(false)
                 .name(activitySaveRequestDto.name())
                 .type(activityType)
+                .withWeight(activitySaveRequestDto.withWeight())
                 .build();
         return  activityRepository.save(activity);
     }

@@ -36,6 +36,7 @@ public class Training implements Serializable {
     private int weight;
 
     @Column(name = "training_is_removed")
+    @Builder.Default
     private boolean removed = false;
 
     @Column(name = "training_mode")

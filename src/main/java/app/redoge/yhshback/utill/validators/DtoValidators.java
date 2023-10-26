@@ -10,14 +10,16 @@ public class DtoValidators {
     public boolean activitySaveRequestDtoIsValid(ActivitySaveRequestDto dto){
         return isNotEmpty(dto.name())
                 && isNotEmpty(dto.username())
-                && isNotEmpty(dto.typeName());
+                && isNotEmpty(dto.typeName())
+                && isNotEmpty(dto.withWeight());
     }
 
     public boolean trainingSaveRequestDtoIsValid(TrainingSaveRequestDto dto) {
         return dto.activityId() > 0
                 && isNotEmpty(dto.username())
                 && dto.count() > 0
-                && isNotEmpty(dto.start());
+                && isNotEmpty(dto.start())
+                && isNotEmpty(dto.weight());
     }
 
     public boolean registerRequestDtoIsValid(RegisterRequestDto request) {
@@ -54,7 +56,8 @@ public class DtoValidators {
     public boolean trainingIntoWorkoutSaveDtoIsValid(TrainingIntoWorkoutSaveDto dto){
         return dto.activityId() > 0
                 && dto.count() > 0
-                && isNotEmpty(dto.startTime());
+                && isNotEmpty(dto.startTime())
+                && isNotEmpty(dto.weight());
     }
 
     public boolean friendshipRequestDtoIsValid(FriendshipRequestDto dto) {
