@@ -6,6 +6,8 @@ import app.redoge.yhshback.service.interfaces.IUserWeightService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class UserWeightService implements IUserWeightService {
@@ -18,5 +20,18 @@ public class UserWeightService implements IUserWeightService {
     @Override
     public void removeUserWeight(UserWeight userWeight) {
         repository.delete(userWeight);
+    }
+
+    @Override
+    public boolean isWeightExist(List<UserWeight> userWeightList, UserWeight userWeight) {
+        if (userWeightList.isEmpty()) {
+            return false;
+        }
+        return userWeightList
+                .stream()
+                .anyMatch(
+                        w -> w.getWeight().equals(userWeight.getWeight()) &&
+                                w.getDate().toString().equals(userWeight.getDate().toString())
+                );
     }
 }

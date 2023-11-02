@@ -104,10 +104,11 @@ public class UserService implements  IUserService {
             throw new BadRequestException(String.format("User with username %s not updated!!!", userUpdateRequest.username()));
         var user = getUserByUsername(userUpdateRequest.username());
         var weight = entityMapper.mapFloatToUserWeight(userUpdateRequest.weightKg());
-        userWeightService.saveUserWeight(weight);
-
+        if(!userWeightService.isWeightExist(user.getWeightList(), weight)){
+            userWeightService.saveUserWeight(weight);
+            user.addWeight(weight);
+        }
         user.setHeight(userUpdateRequest.heightSm());
-        user.addWeight(weight);
         user.setSex(userUpdateRequest.sex());
 
         return userRepository.save(user);
