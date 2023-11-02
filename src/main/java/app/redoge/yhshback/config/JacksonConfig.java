@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
@@ -21,6 +22,7 @@ public class JacksonConfig {
         objectMapper.registerModule(new JavaTimeModule());
         SimpleModule module = new SimpleModule();
         module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
+        module.addSerializer(Date.class, new SqlDateSerializer());
         objectMapper.registerModule(module);
         return objectMapper;
     }
@@ -28,6 +30,14 @@ public class JacksonConfig {
         @Override
         public void serialize(LocalDateTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
             gen.writeString(value.atOffset(ZoneOffset.UTC).toString());
+        }
+    }
+
+    public static class SqlDateSerializer extends JsonSerializer<Date>{
+
+        @Override
+        public void serialize(Date value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+            gen.writeString(value.toString());
         }
     }
 }

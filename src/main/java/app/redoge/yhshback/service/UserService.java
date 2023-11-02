@@ -10,6 +10,7 @@ import app.redoge.yhshback.dto.UserUpdateRequestDto;
 
 import app.redoge.yhshback.service.interfaces.IUserService;
 import app.redoge.yhshback.utill.enums.UserFilterParam;
+import app.redoge.yhshback.utill.mappers.EntityMapper;
 import app.redoge.yhshback.utill.validators.DtoValidators;
 import app.redoge.yhshback.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,8 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 public class UserService implements  IUserService {
     private final UserRepository userRepository;
     private final DtoValidators dtoValidators;
+    private final UserWeightService userWeightService;
+    private final EntityMapper entityMapper;
     @Override
     public User findUserByUsername(String username) throws UserNotFoundException {
         return userRepository.findByUsername(username).orElseThrow(()->new UserNotFoundException(username));
@@ -100,9 +103,13 @@ public class UserService implements  IUserService {
         if(!dtoValidators.userUpdateRequestDtoIsValid(userUpdateRequest))
             throw new BadRequestException(String.format("User with username %s not updated!!!", userUpdateRequest.username()));
         var user = getUserByUsername(userUpdateRequest.username());
-        user.setHeightSm(userUpdateRequest.heightSm());
-        user.setWeightKg(userUpdateRequest.weightKg());
+        var weight = entityMapper.mapFloatToUserWeight(userUpdateRequest.weightKg());
+        userWeightService.saveUserWeight(weight);
+
+        user.setHeight(userUpdateRequest.heightSm());
+        user.addWeight(weight);
         user.setSex(userUpdateRequest.sex());
+
         return userRepository.save(user);
     }
 
