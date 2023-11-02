@@ -16,8 +16,8 @@ public class ResponseDtoMapper {
                 user.isEmailConfirmed(),
                 user.getUserRole(),
                 user.getSex(),
-                user.getWeightKg(),
-                user.getHeightSm(),
+                user.getWeightList(),
+                user.getHeight(),
                 user.isEnabled()
         );
     }

@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
 
@@ -44,10 +45,11 @@ public class User implements UserDetails {
     private String sex;
 
     @Column(name = "user_weight")
-    private int weightKg;
+    @OneToMany
+    private List<UserWeight> weightList;
 
     @Column(name = "user_height")
-    private int heightSm;
+    private int height;
 
     @OneToMany(mappedBy = "creator", fetch = FetchType.EAGER)
     private List<Activity> activities;
@@ -58,6 +60,10 @@ public class User implements UserDetails {
     @Column(name = "user_enabled")
     @Builder.Default
     private boolean enabled = true;
+
+    public void addWeight(UserWeight weight) {
+        this.weightList.add(weight);
+    }
 
     @Override
     @JsonIgnore
