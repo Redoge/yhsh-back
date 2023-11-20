@@ -1,0 +1,107 @@
+#!groovy
+properties([disableConcurrentBuilds()])
+
+pipeline {
+    agent any
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
+    }
+    stages {
+        stage('Added env variables') {
+            steps {
+                script {
+                  def sensitiveVariables = [
+                            'SECURITY_PASS',
+                            'datasource_PASS',
+                            'yhsh_PASS',
+                            'mail_PASS',
+                            'key-store-password',
+                            'jwt-secret',
+                            'yhsh-admin-email',
+                            'mail-host',
+                        ]
+                    withCredentials([
+                        usernamePassword(credentialsId: 'security-user', passwordVariable: 'SECURITY_PASS', usernameVariable: 'SECURITY_USER'),
+                        usernamePassword(credentialsId: 'datasource-user', passwordVariable: 'DATASOURCE_PASS', usernameVariable: 'DATASOURCE_USER'),
+                        usernamePassword(credentialsId: 'yhsh-admin', passwordVariable: 'YHSH_PASS', usernameVariable: 'YHSH_USER'),
+                        usernamePassword(credentialsId: 'mail-user', passwordVariable: 'MAIL_PASS', usernameVariable: 'MAIL_USER'),
+                        string(credentialsId: 'key-store-password', variable: 'KEY_STORE_PASSWORD'),
+                        string(credentialsId: 'datasource-url', variable: 'DATASOURCE_URL'),
+                        string(credentialsId: 'jwt-secret', variable: 'JWT_SECRET'),
+                        string(credentialsId: 'yhsh-admin-email', variable: 'YHSH_ADMIN_EMAIL'),
+                        string(credentialsId: 'mail-host', variable: 'MAIL_HOST'),
+                    ]) {
+                        env.SPRING_SECURITY_USER_NAME = SECURITY_USER
+                        env.SPRING_SECURITY_USER_PASSWORD = SECURITY_PASS
+
+                        env.SERVER_SSL_KEY_STORE_PASSWORD = KEY_STORE_PASSWORD
+
+                        env.SPRING_DATASOURCE_URL = DATASOURCE_URL
+                        env.SPRING_DATASOURCE_USERNAME = DATASOURCE_USER
+                        env.SPRING_DATASOURCE_PASSWORD = DATASOURCE_PASS
+
+                        env.JWT_SECRET = JWT_SECRET
+
+                        env.YHSH_ADMIN_USERNAME = YHSH_USER
+                        env.YHSH_ADMIN_PASSWORD = YHSH_PASS
+                        env.YHSH_ADMIN_EMAIL = YHSH_ADMIN_EMAIL
+
+                        env.YHSH_MAIL_HOST = MAIL_HOST
+                        env.YHSH_MAIL_USERNAME = MAIL_USER
+                        env.YHSH_MAIL_PASSWORD = MAIL_PASS
+
+                    }
+                }
+            }
+        }
+      stage('Stop Existing yhsh-back Container') {
+           steps {
+               script {
+                   def containerId = sh(script: 'docker ps -q --filter "ancestor=yhsh-back"', returnStdout: true).trim()
+                   if (containerId) {
+                       echo "Container ID: ${containerId}"
+                       sh "docker stop ${containerId}"
+                   } else {
+                       echo "No active container found for the yhsh-back image."
+                   }
+               }
+           }
+       }
+        stage('Create jar package') {
+            steps {
+                sh 'chmod +x ./gradlew'
+                sh './gradlew clean build'
+                sh 'cp ./build/libs/*-dev.jar ./devops/app.jar'
+            }
+        }
+
+        stage('Create docker image') {
+            steps {
+                dir('devops') {
+                    sh 'docker build -t yhsh-back ' +
+                    " --build-arg SPRING_SECURITY_USER_NAME=${env.SPRING_SECURITY_USER_NAME}"  +
+                    " --build-arg SPRING_SECURITY_USER_PASSWORD=${env.SPRING_SECURITY_USER_PASSWORD}"  +
+                    " --build-arg SERVER_SSL_KEY_STORE_PASSWORD=${env.SERVER_SSL_KEY_STORE_PASSWORD}"  +
+                    " --build-arg SPRING_DATASOURCE_URL=${env.SPRING_DATASOURCE_URL}"  +
+                    " --build-arg SPRING_DATASOURCE_USERNAME=${env.SPRING_DATASOURCE_USERNAME}"  +
+                    " --build-arg SPRING_DATASOURCE_PASSWORD=${env.SPRING_DATASOURCE_PASSWORD}"  +
+                    " --build-arg JWT_SECRET=${env.JWT_SECRET}"  +
+                    " --build-arg YHSH_ADMIN_USERNAME=${env.YHSH_ADMIN_USERNAME}"  +
+                    " --build-arg YHSH_ADMIN_PASSWORD=${env.YHSH_ADMIN_PASSWORD}"  +
+                    " --build-arg YHSH_ADMIN_EMAIL=${env.YHSH_ADMIN_EMAIL}"  +
+                    " --build-arg YHSH_MAIL_HOST=${env.YHSH_MAIL_HOST}"  +
+                    " --build-arg YHSH_MAIL_USERNAME=${env.YHSH_MAIL_USERNAME}"  +
+                    " --build-arg YHSH_MAIL_PASSWORD=${env.YHSH_MAIL_PASSWORD}" +
+                    " ."
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'docker run -d -p 443:443 yhsh-back'
+            }
+        }
+    }
+}
