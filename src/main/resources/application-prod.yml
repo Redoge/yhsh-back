@@ -1,0 +1,31 @@
+server:
+  port: 443
+  ssl:
+    enabled: true
+    key-store-type: PKCS12
+    key-store: classpath:ssl/server.p12
+    key-store-password: ${SERVER_SSL_KEY_STORE_PASSWORD}
+    key-alias: server
+spring:
+  security: #security-user
+    user:
+      password: ${SPRING_SECURITY_USER_PASSWORD}
+      name: ${SPRING_SECURITY_USER_NAME}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL} #datasource-url
+    username: ${SPRING_DATASOURCE_USERNAME} #datasource-user
+    password: ${SPRING_DATASOURCE_PASSWORD}
+api:
+  version: 1
+jwt: #jwt-secret
+  secret: ${JWT_SECRET}
+yhsh:
+  admin: #yhsh-admin
+    username: ${YHSH_ADMIN_USERNAME}
+    password: ${YHSH_ADMIN_PASSWORD}
+    email: ${YHSH_ADMIN_EMAIL} #yhsh-admin-email
+  mail: #mail-user
+    host: ${YHSH_MAIL_HOST} #mail-host
+    port: 587
+    username: ${YHSH_MAIL_USERNAME}
+    password: ${YHSH_MAIL_PASSWORD}
