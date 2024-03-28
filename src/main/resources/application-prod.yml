@@ -1,5 +1,7 @@
 server:
   port: 80
+  ssl:
+    enabled: false
 spring:
   security: #security-user
     user:
